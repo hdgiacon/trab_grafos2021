@@ -4,7 +4,7 @@ import java.util.Deque;
 import java.util.*;
 
 public class Grafo {
-	
+
 	/*definição de vertice */
 	public class Vertice {
 		String nome;
@@ -76,7 +76,7 @@ public class Grafo {
 
 	
 	/*BFS*/
-	public void Bfs(Grafo g, Vertice s) {
+	public Vertice Bfs(Grafo g, Vertice s) {
 		for(Vertice v: g.vertices){
 			v.d = Double.POSITIVE_INFINITY;
 			v.pai = new Vertice();
@@ -90,6 +90,9 @@ public class Grafo {
 		Q.add(s);
 
 		Vertice u = new Vertice("u");
+		Vertice maior = new Vertice("maior");
+		maior = s;
+
 		while(Q.size() != 0) {
 			u = Q.removeFirst();
 			for(Aresta v: u.adj) {
@@ -98,14 +101,33 @@ public class Grafo {
 					v.destino.pai = u;
 					v.destino.d = u.d + 1.0;
 					Q.add(v.destino);
+
+					if(v.destino.d > maior.d){
+						maior = v.destino;
+					}
 				}
 			}
 		}
 		
+		return maior;
 	}
 
 	/*função diâmetro*/
+	public Double diametro(Grafo g) {
+		Vertice s = g.vertices.get(0);
+		Vertice a = new Vertice();
+		Vertice b = new Vertice();
+		
+		a = g.Bfs(g, s);
+		b = g.Bfs(g, a);
+		
+		return b.d - a.d;
 
+		// s = vértice qualquer de G.V
+		// a = vértice c/ valor maximo de d obtido pelo BFS(G, s)
+		// b = vértice c/ valor maximo de d obtido pelo BFS(G, a)
+		// return distancia entre a e b
+	}
 	
 	/*testes unitarios*/
 	public void testesUnitarios(){
@@ -124,10 +146,12 @@ public class Grafo {
 		
 		g.Bfs(g, s);
 		for(Vertice v: g.vertices) {
-			System.out.println(v.cor);
-			System.out.println(v.d);
-			System.out.println(v.pai.nome);
+			//System.out.println(v.cor);
+			//System.out.println(v.d);
+			//System.out.println(v.pai.nome);
 		}
+		
+		g.diametro(g);
 	}
 
 }
