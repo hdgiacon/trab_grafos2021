@@ -1,5 +1,7 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.*;
 
 public class Grafo {
 	
@@ -7,10 +9,17 @@ public class Grafo {
 	public class Vertice {
 		String nome;
 		List<Aresta> adj;
+		Double d;
+		Vertice pai;
+		String cor;
 
 		Vertice(String nome) {
 			this.nome = nome;
 			this.adj = new ArrayList<Aresta>();
+		}
+
+		Vertice() {
+			this.nome = "Nulo";
 		}
 
 		void addAdj(Aresta e) {
@@ -67,7 +76,33 @@ public class Grafo {
 
 	
 	/*BFS*/
+	public void Bfs(Grafo g, Vertice s) {
+		for(Vertice v: g.vertices){
+			v.d = Double.POSITIVE_INFINITY;
+			v.pai = new Vertice();
+			v.cor = "Branco";
+		}
 
+		s.d = 0.0;
+		s.pai = new Vertice();
+		s.cor = "Cinza";
+		Deque<Vertice> Q = new ArrayDeque<Vertice>();
+		Q.add(s);
+
+		Vertice u = new Vertice("u");
+		while(Q.size() != 0) {
+			u = Q.removeFirst();
+			for(Aresta v: u.adj) {
+				if(v.destino.cor == "Branco") {
+					v.destino.cor = "Cinza";
+					v.destino.pai = u;
+					v.destino.d = u.d + 1.0;
+					Q.add(v.destino);
+				}
+			}
+		}
+		
+	}
 
 	/*função diâmetro*/
 
@@ -80,7 +115,19 @@ public class Grafo {
 
 
 	public static void main(String[] args){
+		Grafo g = new Grafo();
+		Vertice s = g.addVertice("s");
+		Vertice t = g.addVertice("t");
+		Vertice u = g.addVertice("u");
+		Aresta st = g.addAresta(s, t);
+		Aresta su = g.addAresta(s, u);
 		
+		g.Bfs(g, s);
+		for(Vertice v: g.vertices) {
+			System.out.println(v.cor);
+			System.out.println(v.d);
+			System.out.println(v.pai.nome);
+		}
 	}
 
 }
