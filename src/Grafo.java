@@ -1,9 +1,9 @@
-package Grafo;
-
 import java.util.List;
 import java.util.ArrayList;
 
 public class Grafo {
+	
+	/*definição de vertice */
 	public class Vertice {
 		String nome;
 		List<Aresta> adj;
@@ -18,6 +18,7 @@ public class Grafo {
 		}
 	}
 
+	/*definição de aresta => com e sem peso*/
 	public class Aresta {
 		Vertice origem;
 		Vertice destino;
@@ -38,6 +39,7 @@ public class Grafo {
 	List<Vertice> vertices;
 	List<Aresta> arestas;
 
+	/*contrutor da classe grafo*/
 	public Grafo() {
 		vertices = new ArrayList<Vertice>();
 		arestas = new ArrayList<Aresta>();
@@ -61,6 +63,24 @@ public class Grafo {
 		origem.addAdj(e);
 		arestas.add(e);
 		return e;
+	}
+
+	
+	/*BFS*/
+
+
+	/*função diâmetro*/
+
+	
+	/*testes unitarios*/
+	public void testesUnitarios(){
+		//java -ea Grafo.java para ativar o assert e emitir erros se houver
+		assert (false) : "mensagem de erro";
+	}
+
+
+	public static void main(String[] args){
+		
 	}
 
 }
