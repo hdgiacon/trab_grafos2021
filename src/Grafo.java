@@ -25,6 +25,7 @@ public class Grafo {
 		void addAdj(Aresta e) {
 			adj.add(e);
 		}
+
 	}
 
 	/*definição de aresta => com e sem peso*/
@@ -60,6 +61,7 @@ public class Grafo {
 		return v;
 	}
 
+	//Adiciona aresta de um grafo não ponderado
 	public Aresta addAresta(Vertice origem, Vertice destino){
 		Aresta e =  new Aresta(origem, destino);
 		origem.addAdj(e);
@@ -67,6 +69,7 @@ public class Grafo {
 		return e;
 	}
 
+	// Adiciona aresta de um grafo ponderado
 	public Aresta addAresta(Vertice origem, Vertice destino, Integer peso) {
 		Aresta e = new Aresta(origem, destino, peso);
 		origem.addAdj(e);
@@ -75,7 +78,11 @@ public class Grafo {
 	}
 
 	
-	/*BFS*/
+	/*
+	BFS
+	- Calcula a distância de todos os vertíces alcançáveis 
+	a partir de um vértice de origem s
+	*/
 	public Vertice Bfs(Grafo g, Vertice s) {
 		for(Vertice v: g.vertices){
 			v.d = Double.POSITIVE_INFINITY;
@@ -112,46 +119,58 @@ public class Grafo {
 		return maior;
 	}
 
-	/*função diâmetro*/
-	public Double diametro(Grafo g) {
-		Vertice s = g.vertices.get(0);
+	/*
+	função diâmetro
+	- 
+	*/
+	public Double diametro(Grafo g, Vertice s) {
+
 		Vertice a = new Vertice();
 		Vertice b = new Vertice();
 		
 		a = g.Bfs(g, s);
 		b = g.Bfs(g, a);
-		
-		return b.d - a.d;
 
-		// s = vértice qualquer de G.V
-		// a = vértice c/ valor maximo de d obtido pelo BFS(G, s)
-		// b = vértice c/ valor maximo de d obtido pelo BFS(G, a)
-		// return distancia entre a e b
+		return b.d;
+
 	}
 	
 	/*testes unitarios*/
 	public void testesUnitarios(){
 		//java -ea Grafo.java para ativar o assert e emitir erros se houver
-		assert (false) : "mensagem de erro";
+		/*
+		*---*     *---*     *---*
+		| R |---->| S |     | T |
+		*---*   />*---*     *---*
+		  |    /    |      /  |  
+		  v   /     v     /   v  
+		*---*     *---*  /  *---*
+		| V |<----| W |</  | X |
+		*---*     *---*     *---*
+		*/
+		Grafo g = new Grafo();
+		Vertice r = g.addVertice("r");
+		Vertice s = g.addVertice("s");
+		Vertice t = g.addVertice("t");
+		Vertice v = g.addVertice("v");
+		Vertice w = g.addVertice("w");
+		Vertice x = g.addVertice("x");
+		Aresta rs = g.addAresta(r, s);
+		Aresta rv = g.addAresta(r, v);
+		Aresta wv = g.addAresta(w, v);
+		Aresta vs = g.addAresta(v, s);
+		Aresta sw = g.addAresta(s, w);
+		Aresta tw = g.addAresta(t, w);
+		Aresta tx = g.addAresta(t, x);
+		
+		Double diametro = g.diametro(g, s);
+		assert(diametro == 2.0) : "mensagem de erro";
 	}
 
 
 	public static void main(String[] args){
 		Grafo g = new Grafo();
-		Vertice s = g.addVertice("s");
-		Vertice t = g.addVertice("t");
-		Vertice u = g.addVertice("u");
-		Aresta st = g.addAresta(s, t);
-		Aresta su = g.addAresta(s, u);
-		
-		g.Bfs(g, s);
-		for(Vertice v: g.vertices) {
-			//System.out.println(v.cor);
-			//System.out.println(v.d);
-			//System.out.println(v.pai.nome);
-		}
-		
-		g.diametro(g);
+		g.testesUnitarios();
 	}
 
 }
