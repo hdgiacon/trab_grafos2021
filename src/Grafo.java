@@ -1,34 +1,35 @@
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.*;
 
 public class Grafo {
 
-	/*definição de vertice */
+	/* definição de vertice */
 	public class Vertice {
+		
 		String nome;
 		List<Aresta> adj;
 		Double d;
 		Vertice pai;
 		String cor;
 
+		/* contrutor de um vértice padrão */
 		Vertice(String nome) {
 			this.nome = nome;
 			this.adj = new ArrayList<Aresta>();
 		}
 
+		/* contrutor de um vertice nulo para inicialização */
 		Vertice() {
 			this.nome = "Nulo";
 		}
 
+		/* adiciona uma aresta na lista de adjacencia */	
 		void addAdj(Aresta e) {
 			adj.add(e);
 		}
 
 	}
 
-	/*definição de aresta => com e sem peso*/
+	/* definição de aresta - com e sem peso */
 	public class Aresta {
 		Vertice origem;
 		Vertice destino;
@@ -49,19 +50,20 @@ public class Grafo {
 	List<Vertice> vertices;
 	List<Aresta> arestas;
 
-	/*contrutor da classe grafo*/
+	/* contrutor da classe grafo */
 	public Grafo() {
 		vertices = new ArrayList<Vertice>();
 		arestas = new ArrayList<Aresta>();
 	}
 
+	/* adiciona um vértice à lista de vértices */
 	public Vertice addVertice(String nome) {
 		Vertice v = new Vertice(nome);
 		vertices.add(v);
 		return v;
 	}
 
-	//Adiciona aresta de um grafo não ponderado
+	/* Adiciona aresta de um grafo não ponderado */
 	public Aresta addAresta(Vertice origem, Vertice destino){
 		Aresta e =  new Aresta(origem, destino);
 		origem.addAdj(e);
@@ -69,7 +71,7 @@ public class Grafo {
 		return e;
 	}
 
-	// Adiciona aresta de um grafo ponderado
+	/* Adiciona aresta de um grafo ponderado */
 	public Aresta addAresta(Vertice origem, Vertice destino, Integer peso) {
 		Aresta e = new Aresta(origem, destino, peso);
 		origem.addAdj(e);
@@ -81,7 +83,8 @@ public class Grafo {
 	/*
 	BFS
 	- Calcula a distância de todos os vertíces alcançáveis 
-	a partir de um vértice de origem s
+	a partir de um vértice de origem s;
+	- Bfs(grafo, vertice) => vertice com a maior distancia.
 	*/
 	public Vertice Bfs(Grafo g, Vertice s) {
 		for(Vertice v: g.vertices){
@@ -121,7 +124,8 @@ public class Grafo {
 
 	/*
 	função diâmetro
-	- 
+	- comprimento do maior caminho do grafo;
+	- diametro(grafo, vertice) => maior comprimento do grafo.
 	*/
 	public Double diametro(Grafo g, Vertice s) {
 
@@ -135,9 +139,10 @@ public class Grafo {
 
 	}
 	
-	/*testes unitarios*/
+	/* testes unitarios */
 	public void testesUnitarios(){
-		//java -ea Grafo.java para ativar o assert e emitir erros se houver
+		//java -ea Grafo.java 		/* ativar o assert e emitir erros se houver */
+
 		/*
 		*---*     *---*     *---*
 		| R |---->| S |     | T |
@@ -148,6 +153,7 @@ public class Grafo {
 		| V |<----| W |</  | X |
 		*---*     *---*     *---*
 		*/
+
 		Grafo g = new Grafo();
 		Vertice r = g.addVertice("r");
 		Vertice s = g.addVertice("s");
@@ -163,8 +169,11 @@ public class Grafo {
 		Aresta tw = g.addAresta(t, w);
 		Aresta tx = g.addAresta(t, x);
 		
-		Double diametro = g.diametro(g, s);
-		assert(diametro == 2.0) : "mensagem de erro";
+		Double diametro1 = g.diametro(g, s);
+		assert(diametro1 == 2.0) : "Erro no diametro 1";
+
+		Double diametro2 = g.diametro(g, w);
+		assert(diametro2 == 2.0) : "Erro no diametro 2";
 	}
 
 
