@@ -169,20 +169,20 @@ public class Grafo {
 		Aresta tw = g.addAresta(t, w);
 		Aresta tx = g.addAresta(t, x);
 		
-		//Double diametro1 = g.diametro(g, s);
-		//assert(diametro1 == 2.0) : "Erro no diametro 1";
+		Double diametro1 = g.diametro(g, s);
+		assert(diametro1 == 2.0) : "Erro no diametro 1";
 
-		//Double diametro2 = g.diametro(g, w);
-		//assert(diametro2 == 2.0) : "Erro no diametro 2";
+		Double diametro2 = g.diametro(g, w);
+		assert(diametro2 == 2.0) : "Erro no diametro 2";
 
-		//Double diametro3 = g.diametro(g, t);
-		//assert(diametro3 == 2.0) : "Erro no diametro 3";
+		Double diametro3 = g.diametro(g, t);
+		assert(diametro3 == 2.0) : "Erro no diametro 3";
 
-		//Double diametro4 = g.diametro(g, x);		
-		//assert(diametro4 == 0.0) : "Erro no diametro 4";
+		Double diametro4 = g.diametro(g, x);		
+		assert(diametro4 == 0.0) : "Erro no diametro 4";
 
-		//Double diametro5 = g.diametro(g, v);
-		//assert(diametro5 == 2.0) : "Erro no diametro 5";
+		Double diametro5 = g.diametro(g, v);
+		assert(diametro5 == 2.0) : "Erro no diametro 5";
 
 
 		/*
@@ -217,19 +217,19 @@ public class Grafo {
 		Aresta e52 = h.addAresta(v5, v2);
 		Aresta e54 = h.addAresta(v5, v4);
 
-		Double diametro6 = g.diametro(h, v1);	//no debbug o valor do diametro ta 0.0
+		Double diametro6 = h.diametro(h, v1);
 		assert(diametro6 == 2.0) : "Erro no diametro 6";
 
-		Double diametro7 = g.diametro(h, v2);
+		Double diametro7 = h.diametro(h, v2);
 		assert(diametro7 == 2.0) : "Erro no diametro 7";
 
-		Double diametro8 = g.diametro(h, v3);
+		Double diametro8 = h.diametro(h, v3);
 		assert(diametro8 == 2.0) : "Erro no diametro 8";
 
-		Double diametro9 = g.diametro(h, v4);
+		Double diametro9 = h.diametro(h, v4);
 		assert(diametro9 == 2.0) : "Erro no diametro 9";
 
-		Double diametro10 = g.diametro(h, v5);
+		Double diametro10 = h.diametro(h, v5);
 		assert(diametro10 == 2.0) : "Erro no diametro 10";
 
 	}
