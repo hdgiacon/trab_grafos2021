@@ -174,6 +174,64 @@ public class Grafo {
 
 		Double diametro2 = g.diametro(g, w);
 		assert(diametro2 == 2.0) : "Erro no diametro 2";
+
+		Double diametro3 = g.diametro(g, t);
+		assert(diametro3 == 2.0) : "Erro no diametro 3";
+
+		Double diametro4 = g.diametro(g, x);		
+		assert(diametro4 == 0.0) : "Erro no diametro 4";
+
+		Double diametro5 = g.diametro(g, v);
+		assert(diametro5 == 2.0) : "Erro no diametro 5";
+
+
+		/*
+		*---*     *---*     
+		| 1 |-----| 2 |     
+		*---*   / *---* \    
+		  |    /    |    \ *---*  
+		  |   /     |      | 3 |
+		*---*     *---*  / *---*
+		| 5 |-----| 4 | /  
+		*---*     *---*    
+		*/
+
+		Grafo h = new Grafo();
+		Vertice v1 = h.addVertice("1");	
+		Vertice v2 = h.addVertice("2");
+		Vertice v3 = h.addVertice("3");
+		Vertice v4 = h.addVertice("4");
+		Vertice v5 = h.addVertice("5");
+		Aresta e12 = h.addAresta(v1, v2);
+		Aresta e15 = h.addAresta(v1, v5);
+		Aresta e21 = h.addAresta(v2, v1);
+		Aresta e23 = h.addAresta(v2, v3);
+		Aresta e24 = h.addAresta(v2, v4);
+		Aresta e25 = h.addAresta(v2, v5);
+		Aresta e32 = h.addAresta(v3, v2);
+		Aresta e34 = h.addAresta(v3, v4);
+		Aresta e42 = h.addAresta(v4, v2);
+		Aresta e43 = h.addAresta(v4, v3);
+		Aresta e45 = h.addAresta(v4, v5);
+		Aresta e51 = h.addAresta(v5, v1);
+		Aresta e52 = h.addAresta(v5, v2);
+		Aresta e54 = h.addAresta(v5, v4);
+
+		Double diametro6 = g.diametro(g, v1);	//no debbug o valor do diametro ta 0.0
+		assert(diametro6 == 2.0) : "Erro no diametro 6";
+
+		Double diametro7 = g.diametro(g, v2);
+		assert(diametro7 == 2.0) : "Erro no diametro 7";
+
+		Double diametro8 = g.diametro(g, v3);
+		assert(diametro8 == 2.0) : "Erro no diametro 8";
+
+		Double diametro9 = g.diametro(g, v4);
+		assert(diametro9 == 2.0) : "Erro no diametro 9";
+
+		Double diametro10 = g.diametro(g, v5);
+		assert(diametro10 == 2.0) : "Erro no diametro 10";
+
 	}
 
 
