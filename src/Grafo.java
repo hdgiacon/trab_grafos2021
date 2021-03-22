@@ -2,6 +2,11 @@ import java.util.*;
 
 public class Grafo {
 
+	/* contantes para cor */
+	static final String BRANCO = "branco";
+	static final String CINZA = "cinza";
+
+	
 	/* definição de vertice */
 	public class Vertice {
 		
@@ -64,19 +69,17 @@ public class Grafo {
 	}
 
 	/* Adiciona aresta de um grafo não ponderado */
-	public Aresta addAresta(Vertice origem, Vertice destino){
+	public void addAresta(Vertice origem, Vertice destino){
 		Aresta e =  new Aresta(origem, destino);
 		origem.addAdj(e);
 		arestas.add(e);
-		return e;
 	}
 
 	/* Adiciona aresta de um grafo ponderado */
-	public Aresta addAresta(Vertice origem, Vertice destino, Integer peso) {
+	public void addAresta(Vertice origem, Vertice destino, Integer peso) {
 		Aresta e = new Aresta(origem, destino, peso);
 		origem.addAdj(e);
 		arestas.add(e);
-		return e;
 	}
 
 	
@@ -90,12 +93,12 @@ public class Grafo {
 		for(Vertice v: g.vertices){
 			v.d = Double.POSITIVE_INFINITY;
 			v.pai = new Vertice();
-			v.cor = "Branco";
+			v.cor = BRANCO;
 		}
 
 		s.d = 0.0;
 		s.pai = new Vertice();
-		s.cor = "Cinza";
+		s.cor = CINZA;
 		Deque<Vertice> Q = new ArrayDeque<Vertice>();
 		Q.add(s);
 
@@ -106,8 +109,8 @@ public class Grafo {
 		while(Q.size() != 0) {
 			u = Q.removeFirst();
 			for(Aresta v: u.adj) {
-				if(v.destino.cor == "Branco") {
-					v.destino.cor = "Cinza";
+				if(v.destino.cor == BRANCO) {
+					v.destino.cor = CINZA;
 					v.destino.pai = u;
 					v.destino.d = u.d + 1.0;
 					Q.add(v.destino);
@@ -161,13 +164,13 @@ public class Grafo {
 		Vertice v = g.addVertice("v");
 		Vertice w = g.addVertice("w");
 		Vertice x = g.addVertice("x");
-		Aresta rs = g.addAresta(r, s);
-		Aresta rv = g.addAresta(r, v);
-		Aresta wv = g.addAresta(w, v);
-		Aresta vs = g.addAresta(v, s);
-		Aresta sw = g.addAresta(s, w);
-		Aresta tw = g.addAresta(t, w);
-		Aresta tx = g.addAresta(t, x);
+		g.addAresta(r, s);
+		g.addAresta(r, v);
+		g.addAresta(w, v);
+		g.addAresta(v, s);
+		g.addAresta(s, w);
+		g.addAresta(t, w);
+		g.addAresta(t, x);
 		
 		Double diametro1 = g.diametro(g, s);
 		assert(diametro1 == 2.0) : "Erro no diametro 1";
@@ -202,20 +205,20 @@ public class Grafo {
 		Vertice v3 = h.addVertice("3");
 		Vertice v4 = h.addVertice("4");
 		Vertice v5 = h.addVertice("5");
-		Aresta e12 = h.addAresta(v1, v2);
-		Aresta e15 = h.addAresta(v1, v5);
-		Aresta e21 = h.addAresta(v2, v1);
-		Aresta e23 = h.addAresta(v2, v3);
-		Aresta e24 = h.addAresta(v2, v4);
-		Aresta e25 = h.addAresta(v2, v5);
-		Aresta e32 = h.addAresta(v3, v2);
-		Aresta e34 = h.addAresta(v3, v4);
-		Aresta e42 = h.addAresta(v4, v2);
-		Aresta e43 = h.addAresta(v4, v3);
-		Aresta e45 = h.addAresta(v4, v5);
-		Aresta e51 = h.addAresta(v5, v1);
-		Aresta e52 = h.addAresta(v5, v2);
-		Aresta e54 = h.addAresta(v5, v4);
+		h.addAresta(v1, v2);
+		h.addAresta(v1, v5);
+		h.addAresta(v2, v1);
+		h.addAresta(v2, v3);
+		h.addAresta(v2, v4);
+		h.addAresta(v2, v5);
+		h.addAresta(v3, v2);
+		h.addAresta(v3, v4);
+		h.addAresta(v4, v2);
+		h.addAresta(v4, v3);
+		h.addAresta(v4, v5);
+		h.addAresta(v5, v1);
+		h.addAresta(v5, v2);
+		h.addAresta(v5, v4);
 
 		Double diametro6 = h.diametro(h, v1);
 		assert(diametro6 == 2.0) : "Erro no diametro 6";
