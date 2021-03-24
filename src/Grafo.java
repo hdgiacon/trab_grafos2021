@@ -87,9 +87,12 @@ public class Grafo {
 	BFS
 	- Calcula a distância de todos os vertíces alcançáveis 
 	a partir de um vértice de origem s;
-	- Bfs(grafo, vertice) => vertice com a maior distancia.
+	- Bfs(grafo, vertice) => resulta em um efeito colateral no grafo,
+	atribuindo a distância dos vértices v ao vértice de origem s no campo v.d,
+	seu vértice antecessor ao campo v.pai
+	e sua cor em v.cor;
 	*/
-	public Vertice Bfs(Grafo g, Vertice s) {
+	public void Bfs(Grafo g, Vertice s) {
 		for(Vertice v: g.vertices){
 			v.d = Double.POSITIVE_INFINITY;
 			v.pai = new Vertice();
@@ -103,8 +106,6 @@ public class Grafo {
 		Q.add(s);
 
 		Vertice u = new Vertice("u");
-		Vertice maior = new Vertice("maior");
-		maior = s;
 
 		while(Q.size() != 0) {
 			u = Q.removeFirst();
@@ -114,14 +115,30 @@ public class Grafo {
 					v.destino.pai = u;
 					v.destino.d = u.d + 1.0;
 					Q.add(v.destino);
-
-					if(v.destino.d > maior.d){
-						maior = v.destino;
-					}
 				}
 			}
 		}
 		
+	}
+
+	/*
+		Função que retorna o vértice com maior distância.
+		Utilizado após o bfs para obter o vértice v com maior distancia do vértice u,
+		faz parte do cálculo do diametro do grafo
+	*/
+	public Vertice maior(Grafo g) {
+		Vertice maior = new Vertice();
+		maior.d = 0.0;
+		
+		for(Vertice v: g.vertices) {
+			
+			if(v.d != Double.POSITIVE_INFINITY) {
+				if(v.d >= maior.d) {
+					maior = v;
+				}
+			}
+		}
+
 		return maior;
 	}
 
@@ -135,11 +152,19 @@ public class Grafo {
 		Vertice a = new Vertice();
 		Vertice b = new Vertice();
 		
-		a = g.Bfs(g, s);
-		b = g.Bfs(g, a);
+		g.Bfs(g, s);
+		a = maior(g);
+
+		g.Bfs(g, a);
+		b = maior(g);
 
 		return b.d;
 
+	}
+
+	public static void main(String[] args){
+		Grafo g = new Grafo();
+		g.testesUnitarios();
 	}
 	
 	/* testes unitarios */
@@ -149,11 +174,11 @@ public class Grafo {
 		/*
 		*---*     *---*     *---*
 		| R |---->| S |     | T |
-		*---*   />*---*     *---*
-		  |    /    |      /  |  
-		  v   /     v     /   v  
+		*---*  /> *---*     *---*
+		  |   /     |      /  |  
+		  v  /      v     /   v  
 		*---*     *---*  /  *---*
-		| V |<----| W |</  | X |
+		| V |<----| W |</   | X |
 		*---*     *---*     *---*
 		*/
 
@@ -171,21 +196,35 @@ public class Grafo {
 		g.addAresta(s, w);
 		g.addAresta(t, w);
 		g.addAresta(t, x);
+
+		g.Bfs(g, s);
+
+		assert(s.d == 0.0) : "Erro na distancia do vértice s";
+		assert(r.d == Double.POSITIVE_INFINITY) : "Erro na distancia do vértice r";
+		assert(v.d == 2.0) : "Erro na distancia do vértice v";
+		assert(w.d == 1.0) : "Erro na distancia do vértice w";
+		assert(t.d == Double.POSITIVE_INFINITY) : "Erro na distancia do vértice t";
+		assert(x.d == Double.POSITIVE_INFINITY) : "Erro na distancia do vértice x";
+
+		assert(maior(g).d == 2.0) : "Erro na função maior, Bfs(g, s)";
+
+		g.Bfs(g,w);
+		assert(maior(g).d == 2.0) : "Erro na função maior, Bfs(g, w)";
+
+		g.Bfs(g,t);
+		assert(maior(g).d == 3.0) : "Erro na função maior, Bfs(g, t)";
+
+		g.Bfs(g,x);
+		assert(maior(g).d == 0.0) : "Erro na função maior, Bfs(g, x)";
+
+		g.Bfs(g,v);
+		assert(maior(g).d == 2.0) : "Erro na função maior, Bfs(g, v)";
 		
-		Double diametro1 = g.diametro(g, s);
-		assert(diametro1 == 2.0) : "Erro no diametro 1";
-
-		Double diametro2 = g.diametro(g, w);
-		assert(diametro2 == 2.0) : "Erro no diametro 2";
-
-		Double diametro3 = g.diametro(g, t);
-		assert(diametro3 == 2.0) : "Erro no diametro 3";
-
-		Double diametro4 = g.diametro(g, x);		
-		assert(diametro4 == 0.0) : "Erro no diametro 4";
-
-		Double diametro5 = g.diametro(g, v);
-		assert(diametro5 == 2.0) : "Erro no diametro 5";
+		assert(g.diametro(g, s) == 2.0) : "Erro no diametro 1";
+		assert(g.diametro(g, w) == 2.0) : "Erro no diametro 2";
+		assert(g.diametro(g, t) == 2.0) : "Erro no diametro 3";
+		assert(g.diametro(g, x) == 0.0) : "Erro no diametro 4";
+		assert(g.diametro(g, v) == 2.0) : "Erro no diametro 5";
 
 
 		/*
@@ -220,27 +259,34 @@ public class Grafo {
 		h.addAresta(v5, v2);
 		h.addAresta(v5, v4);
 
-		Double diametro6 = h.diametro(h, v1);
-		assert(diametro6 == 2.0) : "Erro no diametro 6";
+		h.Bfs(h, v1);
 
-		Double diametro7 = h.diametro(h, v2);
-		assert(diametro7 == 2.0) : "Erro no diametro 7";
+		assert(v1.d == 0.0) : "Erro na distancia do vértice 1";
+		assert(v2.d == 1.0) : "Erro na distancia do vértice 2";
+		assert(v3.d == 2.0) : "Erro na distancia do vértice 3";
+		assert(v4.d == 2.0) : "Erro na distancia do vértice 4";
+		assert(v5.d == 1.0) : "Erro na distancia do vértice 5";
 
-		Double diametro8 = h.diametro(h, v3);
-		assert(diametro8 == 2.0) : "Erro no diametro 8";
+		assert(maior(h).d == 2.0) : "Erro na função maior, Bfs(h, v1)";
 
-		Double diametro9 = h.diametro(h, v4);
-		assert(diametro9 == 2.0) : "Erro no diametro 9";
+		h.Bfs(h, v2);
+		assert(maior(h).d == 1.0) : "Erro na função maior, Bfs(h, v2)";
 
-		Double diametro10 = h.diametro(h, v5);
-		assert(diametro10 == 2.0) : "Erro no diametro 10";
+		h.Bfs(h, v3);
+		assert(maior(h).d == 2.0) : "Erro na função maior, Bfs(h, v3)";
 
-	}
+		h.Bfs(h, v4);
+		assert(maior(h).d == 2.0) : "Erro na função maior, Bfs(h, v4)";
 
+		h.Bfs(h, v5);
+		assert(maior(h).d == 2.0) : "Erro na função maior, Bfs(h, v5)";
 
-	public static void main(String[] args){
-		Grafo g = new Grafo();
-		g.testesUnitarios();
+		assert(h.diametro(h, v1) == 2.0) : "Erro no diametro 6";
+		assert(h.diametro(h, v2) == 2.0) : "Erro no diametro 7";
+		assert(h.diametro(h, v3) == 2.0) : "Erro no diametro 8";
+		assert(h.diametro(h, v4) == 2.0) : "Erro no diametro 9";
+		assert(h.diametro(h, v5) == 2.0) : "Erro no diametro 10";
+
 	}
 
 }
