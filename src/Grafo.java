@@ -1,5 +1,6 @@
 import java.util.*;
 
+/* definição de grafo */
 public class Grafo {
 
 	/* contantes para cor */
@@ -16,13 +17,13 @@ public class Grafo {
 		Vertice pai;
 		String cor;
 
-		/* contrutor de um vértice padrão */
+		/* construtor de um vértice padrão */
 		Vertice(String nome) {
 			this.nome = nome;
 			this.adj = new ArrayList<Aresta>();
 		}
 
-		/* contrutor de um vertice nulo para inicialização */
+		/* construtor de um vertice nulo para inicialização */
 		Vertice() {
 			this.nome = "Nulo";
 		}
@@ -34,22 +35,17 @@ public class Grafo {
 
 	}
 
-	/* definição de aresta - com e sem peso */
+	/* definição de aresta */
 	public class Aresta {
+		
 		Vertice origem;
 		Vertice destino;
-		Integer peso;
 
 		Aresta(Vertice origem, Vertice destino) {
 			this.origem = origem;
 			this.destino = destino;
 		}
 
-		Aresta(Vertice origem, Vertice destino, Integer peso) {
-			this.origem = origem;
-			this.destino = destino;
-			this.peso = peso;
-		}
 	}
 
 	List<Vertice> vertices;
@@ -68,29 +64,20 @@ public class Grafo {
 		return v;
 	}
 
-	/* Adiciona aresta de um grafo não ponderado */
+	/* Adiciona aresta no grafo */
 	public void addAresta(Vertice origem, Vertice destino){
 		Aresta e =  new Aresta(origem, destino);
 		origem.addAdj(e);
 		arestas.add(e);
 	}
-
-	/* Adiciona aresta de um grafo ponderado */
-	public void addAresta(Vertice origem, Vertice destino, Integer peso) {
-		Aresta e = new Aresta(origem, destino, peso);
-		origem.addAdj(e);
-		arestas.add(e);
-	}
-
 	
 	/*
 	BFS
-	- Calcula a distância de todos os vertíces alcançáveis 
-	a partir de um vértice de origem s;
-	- Bfs(grafo, vertice) => resulta em um efeito colateral no grafo,
-	atribuindo a distância dos vértices v ao vértice de origem s no campo v.d,
-	seu vértice antecessor ao campo v.pai
-	e sua cor em v.cor;
+		- Calcula a distância de todos os vertíces alcançáveis 
+		a partir de um vértice de origem s;
+		- Bfs(grafo, vertice) => resulta em um efeito colateral no grafo,
+		atribuindo a distância dos vértices v ao vértice de origem s no campo v.d,
+		seu vértice antecessor ao campo v.pai, e sua cor em v.cor.
 	*/
 	public void Bfs(Grafo g, Vertice s) {
 		for(Vertice v: g.vertices){
@@ -118,13 +105,14 @@ public class Grafo {
 				}
 			}
 		}
-		
+
 	}
 
-	/*
-		Função que retorna o vértice com maior distância.
-		Utilizado após o bfs para obter o vértice v com maior distancia do vértice u,
-		faz parte do cálculo do diametro do grafo
+	/*	
+		- Função que retorna o vértice com maior distância;
+		- Utilizado após o bfs para obter o vértice v com maior distancia do vértice u,
+		faz parte do cálculo do diametro do grafo;
+		- maior(grafo) => maior.
 	*/
 	public Vertice maior(Grafo g) {
 		Vertice maior = new Vertice();
@@ -144,8 +132,8 @@ public class Grafo {
 
 	/*
 	função diâmetro
-	- comprimento do maior caminho do grafo;
-	- diametro(grafo, vertice) => maior comprimento do grafo.
+		- comprimento do maior caminho do grafo;
+		- diametro(grafo, vertice) => maior comprimento do grafo.
 	*/
 	public Double diametro(Grafo g, Vertice s) {
 
@@ -160,11 +148,6 @@ public class Grafo {
 
 		return b.d;
 
-	}
-
-	public static void main(String[] args){
-		Grafo g = new Grafo();
-		g.testesUnitarios();
 	}
 	
 	/* testes unitarios */
@@ -287,6 +270,11 @@ public class Grafo {
 		assert(h.diametro(h, v4) == 2.0) : "Erro no diametro 9";
 		assert(h.diametro(h, v5) == 2.0) : "Erro no diametro 10";
 
+	}
+
+	public static void main(String[] args){
+		Grafo g = new Grafo();
+		g.testesUnitarios();
 	}
 
 }
