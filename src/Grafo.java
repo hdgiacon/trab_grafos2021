@@ -1,3 +1,10 @@
+/*
+
+	Gustavo Belançon Mendes, RA: 99037
+	Héctor Dorrighell Giacon, RA: 99450
+
+*/
+
 import java.util.*;
 
 /* definição de grafo */
@@ -41,6 +48,7 @@ public class Grafo {
 		Vertice origem;
 		Vertice destino;
 
+		/* construtor de uma aresta */
 		Aresta(Vertice origem, Vertice destino) {
 			this.origem = origem;
 			this.destino = destino;
@@ -75,6 +83,7 @@ public class Grafo {
 	BFS
 		- Calcula a distância de todos os vertíces alcançáveis 
 		a partir de um vértice de origem s;
+		- Resulta em uma arvore de
 		- Bfs(grafo, vertice) => resulta em um efeito colateral no grafo,
 		atribuindo a distância dos vértices v ao vértice de origem s no campo v.d,
 		seu vértice antecessor ao campo v.pai, e sua cor em v.cor.
@@ -110,9 +119,14 @@ public class Grafo {
 
 	/*	
 		- Função que retorna o vértice com maior distância;
+		- A entrada precisa ser uma árvore
 		- Utilizado após o bfs para obter o vértice v com maior distancia do vértice u,
 		faz parte do cálculo do diametro do grafo;
 		- maior(grafo) => maior.
+
+		- maior(G) => 3
+		- maior(H) => 2
+		- maior(I) => 1
 	*/
 	public Vertice maior(Grafo g) {
 		Vertice maior = new Vertice();
@@ -133,7 +147,12 @@ public class Grafo {
 	/*
 	função diâmetro
 		- comprimento do maior caminho do grafo;
+		- entrada precisa ser uma árvore
 		- diametro(grafo, vertice) => maior comprimento do grafo.
+
+		- diametro(G, s) => 2
+		- diametro(H, v1) => 3
+		- diametro(I, a) =>	1
 	*/
 	public Double diametro(Grafo g, Vertice s) {
 
@@ -150,10 +169,12 @@ public class Grafo {
 
 	}
 	
-	/* testes unitarios */
-	public void testesUnitarios(){
-		//java -ea Grafo.java 		/* ativar o assert e emitir erros se houver */
-
+	/* 
+		- teste unitário 1 
+		- java -ea Grafo.java 	->	 ativar o assert e emitir erros se houver algum 
+	*/
+	public void testeUnitario1(){
+		
 		/*
 		*---*     *---*     *---*
 		| R |---->| S |     | T |
@@ -209,7 +230,10 @@ public class Grafo {
 		assert(g.diametro(g, x) == 0.0) : "Erro no diametro 4";
 		assert(g.diametro(g, v) == 2.0) : "Erro no diametro 5";
 
+	}
 
+	/* teste unitário 2 */
+	public void testeUnitario2(){
 		/*
 		*---*     *---*     
 		| 1 |-----| 2 |     
@@ -274,7 +298,10 @@ public class Grafo {
 
 	public static void main(String[] args){
 		Grafo g = new Grafo();
-		g.testesUnitarios();
+		g.testeUnitario1();
+
+		Grafo h = new Grafo();
+		h.testeUnitario2();
 	}
 
 }
