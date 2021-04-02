@@ -23,6 +23,7 @@ public class Grafo {
 		Double d;
 		Vertice pai;
 		String cor;
+		boolean visitado;
 
 		/* construtor de um vértice padrão */
 		Vertice(String nome) {
@@ -168,7 +169,55 @@ public class Grafo {
 		return b.d;
 
 	}
-	
+
+	/*
+	 função random tree 
+	 	- recebe um número inteiro n > 0, 
+		produzindo uma árvore contendo os n vertices partindo de um vértice aleatório u
+
+		randomTreeRandomWalk(n) => G
+		- onde G é um grafo formado pela árvore
+	 */
+	public Grafo randomTreeRandomWalk(int n) {
+		Grafo g = new Grafo();
+		for(Integer i = 0; i < n; i++) {
+			String nomeVertice = i.toString();
+			g.addVertice(nomeVertice);
+		}
+
+		for(Vertice u: g.vertices) {
+			u.visitado = false;
+		}
+
+		Vertice u = g.vertices.get(0);
+		u.visitado = true;
+
+		Random verticeAleatorio = new Random();
+
+		while(g.arestas.size() < n-1) {
+			Vertice v = g.vertices.get(verticeAleatorio.nextInt(n));
+
+			if(v.visitado == false) {
+				g.addAresta(u, v);
+				v.visitado = true;
+			}
+
+			u = v;
+		}
+
+		return g;
+	}
+
+	public static void main(String[] args){
+		Grafo g = new Grafo();
+		g.testeUnitario1();
+
+		Grafo h = new Grafo();
+		h.testeUnitario2();
+
+		g.randomTreeRandomWalk(5);
+	}
+
 	/* 
 		- teste unitário 1 
 		- java -ea Grafo.java 	->	 ativar o assert e emitir erros se houver algum 
@@ -294,14 +343,6 @@ public class Grafo {
 		assert(h.diametro(h, v4) == 2.0) : "Erro no diametro 9";
 		assert(h.diametro(h, v5) == 2.0) : "Erro no diametro 10";
 
-	}
-
-	public static void main(String[] args){
-		Grafo g = new Grafo();
-		g.testeUnitario1();
-
-		Grafo h = new Grafo();
-		h.testeUnitario2();
 	}
 
 }
