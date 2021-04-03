@@ -199,6 +199,7 @@ public class Grafo {
 
 			if(v.visitado == false) {
 				g.addAresta(u, v);
+				g.addAresta(v, u);
 				v.visitado = true;
 			}
 
@@ -215,7 +216,7 @@ public class Grafo {
 		Grafo h = new Grafo();
 		h.testeUnitario2();
 
-		g.randomTreeRandomWalk(5);
+		g = g.randomTreeRandomWalk(5);
 	}
 
 	/* 
