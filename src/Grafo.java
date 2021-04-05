@@ -1,7 +1,7 @@
 /*
 
 	Gustavo Belançon Mendes, RA: 99037
-	Héctor Dorrighell Giacon, RA: 99450
+	Héctor Dorrighello Giacon, RA: 99450
 
 */
 
@@ -73,10 +73,18 @@ public class Grafo {
 		return v;
 	}
 
-	/* Adiciona aresta no grafo */
+	/* Adiciona aresta orientada no grafo */
 	public void addAresta(Vertice origem, Vertice destino){
 		Aresta e =  new Aresta(origem, destino);
 		origem.addAdj(e);
+		arestas.add(e);
+	}
+
+	/* Adiciona aresta não orientada no grafo */
+	public void addArestaNo(Vertice origem, Vertice destino){
+		Aresta e =  new Aresta(origem, destino);
+		origem.addAdj(e);
+		destino.addAdj(e);
 		arestas.add(e);
 	}
 	
@@ -84,7 +92,8 @@ public class Grafo {
 	BFS
 		- Calcula a distância de todos os vertíces alcançáveis 
 		a partir de um vértice de origem s;
-		- Resulta em uma arvore de
+		- Resulta em uma arvore;
+
 		- Bfs(grafo, vertice) => resulta em um efeito colateral no grafo,
 		atribuindo a distância dos vértices v ao vértice de origem s no campo v.d,
 		seu vértice antecessor ao campo v.pai, e sua cor em v.cor.
@@ -118,12 +127,13 @@ public class Grafo {
 
 	}
 
-	/*	
+	/*
+	função maior	
 		- Função que retorna o vértice com maior distância;
-		- A entrada precisa ser uma árvore
+		- A entrada precisa ser uma árvore;
 		- Utilizado após o bfs para obter o vértice v com maior distancia do vértice u,
 		faz parte do cálculo do diametro do grafo;
-		- maior(grafo) => maior.
+		- maior(grafo) => maior
 
 		- maior(G) => 3
 		- maior(H) => 2
@@ -171,13 +181,17 @@ public class Grafo {
 	}
 
 	/*
-	 função random tree 
-	 	- recebe um número inteiro n > 0, 
-		produzindo uma árvore contendo os n vertices partindo de um vértice aleatório u
+	função random tree
+	 	- recebe um número inteiro n > 0; 
+		- produz uma árvore contendo os n vertices partindo de um vértice aleatório u.
 
 		randomTreeRandomWalk(n) => G
-		- onde G é um grafo formado pela árvore
-	 */
+		- onde G é um grafo formado pela árvore.
+
+		- randomTreeRandomWalk(10) => árvore com 10 vértices
+		- randomTreeRandomWalk(32) => árvore com 32 vértices
+		- randomTreeRandomWalk(100) => árvore com 100 vértices
+	*/
 	public Grafo randomTreeRandomWalk(int n) {
 		Grafo g = new Grafo();
 		for(Integer i = 0; i < n; i++) {
@@ -198,8 +212,7 @@ public class Grafo {
 			Vertice v = g.vertices.get(verticeAleatorio.nextInt(n));
 
 			if(v.visitado == false) {
-				g.addAresta(u, v);
-				g.addAresta(v, u);
+				g.addArestaNo(u, v);
 				v.visitado = true;
 			}
 
@@ -209,14 +222,49 @@ public class Grafo {
 		return g;
 	}
 
+	/*
+	função isConnected
+		- verifica se um grafo G possui algum vértice de cor branco;
+		- se não houver, então G é conexo(true).
+
+		- isConnected(G) => true
+		- isConnected(G) => false
+	*/
+	boolean isConnected(Grafo G){
+		for(Vertice u: G.vertices){
+			if(u.cor.equals(BRANCO)){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/*
+	função isTree
+		- verifica se um grafo G é uma árvore;
+		- a condição if verifica
+		- se não houver ciclos e o grafo for conexo, então G é uma árvore(true).
+
+		- isTree(G) => true
+		- isTree(G) => false
+	*/
+	boolean isTree(Grafo G){
+		if(G.arestas.size() != G.vertices.size() - 1){
+			return false;
+		}  
+		Vertice h;
+		h = G.vertices.get(0);
+		Bfs(G, h);
+		return isConnected(G);
+	}
+
 	public static void main(String[] args){
 		Grafo g = new Grafo();
+		
 		g.testeUnitario1();
-
-		Grafo h = new Grafo();
-		h.testeUnitario2();
-
-		g = g.randomTreeRandomWalk(5);
+		g.testeUnitario2();
+		
+		g.testeRandom();
 	}
 
 	/* 
@@ -284,6 +332,7 @@ public class Grafo {
 
 	/* teste unitário 2 */
 	public void testeUnitario2(){
+
 		/*
 		*---*     *---*     
 		| 1 |-----| 2 |     
@@ -343,6 +392,31 @@ public class Grafo {
 		assert(h.diametro(h, v3) == 2.0) : "Erro no diametro 8";
 		assert(h.diametro(h, v4) == 2.0) : "Erro no diametro 9";
 		assert(h.diametro(h, v5) == 2.0) : "Erro no diametro 10";
+		
+
+	}
+
+	/* teste unitário para randomTreeRandomWalk */
+	public void testeRandom(){
+
+		Grafo g = new Grafo();
+
+		g = g.randomTreeRandomWalk(250);
+		assert(isTree(g) == true) : "Grafo 1 não é uma árvore";
+		g = g.randomTreeRandomWalk(500);
+		assert(isTree(g) == true) : "Grafo 2 não é uma árvore";
+		g = g.randomTreeRandomWalk(750);
+		assert(isTree(g) == true) : "Grafo 3 não é uma árvore";
+		g = g.randomTreeRandomWalk(1000);
+		assert(isTree(g) == true) : "Grafo 4 não é uma árvore";
+		g = g.randomTreeRandomWalk(1250);
+		assert(isTree(g) == true) : "Grafo 5 não é uma árvore";
+		g = g.randomTreeRandomWalk(1500);
+		assert(isTree(g) == true) : "Grafo 6 não é uma árvore";
+		g = g.randomTreeRandomWalk(1750);
+		assert(isTree(g) == true) : "Grafo 7 não é uma árvore";
+		g = g.randomTreeRandomWalk(2000);
+		assert(isTree(g) == true) : "Grafo 8 não é uma árvore";
 
 	}
 
