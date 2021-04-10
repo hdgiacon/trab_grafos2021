@@ -39,7 +39,7 @@ public class Grafo {
 			this.nome = "Nulo";
 		}
 
-		/* adiciona uma aresta na lista de adjacencia */	
+		/* adiciona um vértice na lista de adjacencia */	
 		void addAdj(Vertice v) {
 			adj.add(v);
 		}
@@ -399,6 +399,9 @@ public class Grafo {
 
 	}
 
+	/* testes para verificar se a função randomTreeRandomWalk gera realmente árvores
+	 * utiliza a função isTree que retorna true se o grafo de entrada é uma árvore
+	*/
 	public void testeIsTree() {
 		assert(isTree(randomTreeRandomWalk(250)) == true) : "Grafo 1 não é uma árvore";
 		assert(isTree(randomTreeRandomWalk(500)) == true) : "Grafo 2 não é uma árvore";
@@ -410,7 +413,11 @@ public class Grafo {
 		assert(isTree(randomTreeRandomWalk(2000)) == true) : "Grafo 8 não é uma árvore";
 	}
 
-	/* teste unitário para randomTreeRandomWalk */
+	/* testes automatizados para verificar se randomTreeRandomWalk realmente gera árvores aleatórias
+	 * gera um arquivo 'diametros.txt' com o valor medio de diametro
+	 * das árvores resultantes do algoritmo randomTreeRandomWalk, que tem como entrada
+	 * valores predefinidos para n.
+	*/
 	public void testeRandom() throws IOException{
 
 		int[] tamanho = {250, 500, 750, 1000, 1250, 1500, 1750, 2000};
@@ -434,7 +441,6 @@ public class Grafo {
 			soma = 0.0;
 
 			gravarArq.printf("\n%d %.3f", n, media);
-			System.out.println(media);
 		}
 
 		arq.close();
