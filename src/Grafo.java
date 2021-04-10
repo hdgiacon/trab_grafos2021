@@ -6,6 +6,9 @@
 */
 
 import java.util.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /* definição de grafo */
 public class Grafo {
@@ -19,7 +22,7 @@ public class Grafo {
 	public class Vertice {
 		
 		String nome;
-		List<Aresta> adj;
+		List<Vertice> adj;
 		Double d;
 		Vertice pai;
 		String cor;
@@ -28,7 +31,7 @@ public class Grafo {
 		/* construtor de um vértice padrão */
 		Vertice(String nome) {
 			this.nome = nome;
-			this.adj = new ArrayList<Aresta>();
+			this.adj = new ArrayList<Vertice>();
 		}
 
 		/* construtor de um vertice nulo para inicialização */
@@ -37,8 +40,8 @@ public class Grafo {
 		}
 
 		/* adiciona uma aresta na lista de adjacencia */	
-		void addAdj(Aresta e) {
-			adj.add(e);
+		void addAdj(Vertice v) {
+			adj.add(v);
 		}
 
 	}
@@ -76,15 +79,15 @@ public class Grafo {
 	/* Adiciona aresta orientada no grafo */
 	public void addAresta(Vertice origem, Vertice destino){
 		Aresta e =  new Aresta(origem, destino);
-		origem.addAdj(e);
+		origem.addAdj(destino);
 		arestas.add(e);
 	}
 
 	/* Adiciona aresta não orientada no grafo */
 	public void addArestaNo(Vertice origem, Vertice destino){
 		Aresta e =  new Aresta(origem, destino);
-		origem.addAdj(e);
-		destino.addAdj(e);
+		origem.addAdj(destino);
+		destino.addAdj(origem);
 		arestas.add(e);
 	}
 	
@@ -115,12 +118,12 @@ public class Grafo {
 
 		while(Q.size() != 0) {
 			u = Q.removeFirst();
-			for(Aresta v: u.adj) {
-				if(v.destino.cor == BRANCO) {
-					v.destino.cor = CINZA;
-					v.destino.pai = u;
-					v.destino.d = u.d + 1.0;
-					Q.add(v.destino);
+			for(Vertice v: u.adj) {
+				if(v.cor == BRANCO) {
+					v.cor = CINZA;
+					v.pai = u;
+					v.d = u.d + 1.0;
+					Q.add(v);
 				}
 			}
 		}
@@ -203,10 +206,10 @@ public class Grafo {
 			u.visitado = false;
 		}
 
+		Random verticeAleatorio = new Random();
+
 		Vertice u = g.vertices.get(0);
 		u.visitado = true;
-
-		Random verticeAleatorio = new Random();
 
 		while(g.arestas.size() < n-1) {
 			Vertice v = g.vertices.get(verticeAleatorio.nextInt(n));
@@ -258,12 +261,13 @@ public class Grafo {
 		return isConnected(G);
 	}
 
-	public static void main(String[] args){
+	public static void main(String[] args) throws IOException{
 		Grafo g = new Grafo();
 		
 		g.testeUnitario1();
 		g.testeUnitario2();
 		
+		g.testeIsTree();
 		g.testeRandom();
 	}
 
@@ -392,31 +396,48 @@ public class Grafo {
 		assert(h.diametro(h, v3) == 2.0) : "Erro no diametro 8";
 		assert(h.diametro(h, v4) == 2.0) : "Erro no diametro 9";
 		assert(h.diametro(h, v5) == 2.0) : "Erro no diametro 10";
-		
 
 	}
 
+	public void testeIsTree() {
+		assert(isTree(randomTreeRandomWalk(250)) == true) : "Grafo 1 não é uma árvore";
+		assert(isTree(randomTreeRandomWalk(500)) == true) : "Grafo 2 não é uma árvore";
+		assert(isTree(randomTreeRandomWalk(750)) == true) : "Grafo 3 não é uma árvore";
+		assert(isTree(randomTreeRandomWalk(1000)) == true) : "Grafo 4 não é uma árvore";
+		assert(isTree(randomTreeRandomWalk(1250)) == true) : "Grafo 5 não é uma árvore";
+		assert(isTree(randomTreeRandomWalk(1500)) == true) : "Grafo 6 não é uma árvore";
+		assert(isTree(randomTreeRandomWalk(1750)) == true) : "Grafo 7 não é uma árvore";
+		assert(isTree(randomTreeRandomWalk(2000)) == true) : "Grafo 8 não é uma árvore";
+	}
+
 	/* teste unitário para randomTreeRandomWalk */
-	public void testeRandom(){
+	public void testeRandom() throws IOException{
 
-		Grafo g = new Grafo();
+		int[] tamanho = {250, 500, 750, 1000, 1250, 1500, 1750, 2000};
+		Double soma = 0.0;
+		Double media = 0.0;
 
-		g = g.randomTreeRandomWalk(250);
-		assert(isTree(g) == true) : "Grafo 1 não é uma árvore";
-		g = g.randomTreeRandomWalk(500);
-		assert(isTree(g) == true) : "Grafo 2 não é uma árvore";
-		g = g.randomTreeRandomWalk(750);
-		assert(isTree(g) == true) : "Grafo 3 não é uma árvore";
-		g = g.randomTreeRandomWalk(1000);
-		assert(isTree(g) == true) : "Grafo 4 não é uma árvore";
-		g = g.randomTreeRandomWalk(1250);
-		assert(isTree(g) == true) : "Grafo 5 não é uma árvore";
-		g = g.randomTreeRandomWalk(1500);
-		assert(isTree(g) == true) : "Grafo 6 não é uma árvore";
-		g = g.randomTreeRandomWalk(1750);
-		assert(isTree(g) == true) : "Grafo 7 não é uma árvore";
-		g = g.randomTreeRandomWalk(2000);
-		assert(isTree(g) == true) : "Grafo 8 não é uma árvore";
+		FileWriter arq = new FileWriter("./diametros.txt");
+    	PrintWriter gravarArq = new PrintWriter(arq);
+
+		Random verticeAleatorio = new Random();
+		
+		gravarArq.printf("Random tree\n");
+		for(int n : tamanho) {
+			for(int i = 0; i < 1000; i++){
+				Grafo g = new Grafo();
+				g = randomTreeRandomWalk(n);
+				Vertice s = g.vertices.get(verticeAleatorio.nextInt(n));
+				soma += g.diametro(g, s);
+			}
+			media = soma/1000;
+			soma = 0.0;
+
+			gravarArq.printf("\n%d %.3f", n, media);
+			System.out.println(media);
+		}
+
+		arq.close();
 
 	}
 
