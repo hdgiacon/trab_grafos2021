@@ -65,7 +65,7 @@ public class Grafo {
             this.peso = peso;
         }
 
-		public Aresta getPeso() {
+		public Double getPeso() {
 			return this.peso;
 		}
 
@@ -318,7 +318,12 @@ public class Grafo {
 			//make-set(v);
 		}
 
-		// ordenar arestas por ordem crescente de peso
+		// ordenar arestas por ordem crescente de peso (não decrescente)
+		Collections.sort(g.arestas, new Comparator<Aresta>() {
+			@Override public int compare(Aresta p1, Aresta p2) {
+				return Double.compare(p1.peso, p2.peso);
+			}
+		});	
 
 		for(Aresta e: g.arestas) {
 			Vertice u = e.origem;
@@ -332,12 +337,14 @@ public class Grafo {
 		return A;
 	}
 
+	
+
 	/*
 		Make-Set(x)
 			x.parent = x
 			x.rank = 0
 		
-		Union(x; y)
+		Union(x, y)
 			Link(Find-Set(x), Find-Set(y))
 		
 		Link(x; y)
