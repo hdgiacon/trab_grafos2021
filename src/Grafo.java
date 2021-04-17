@@ -51,11 +51,22 @@ public class Grafo {
 		
 		Vertice origem;
 		Vertice destino;
+		Double peso;
 
 		/* construtor de uma aresta */
 		Aresta(Vertice origem, Vertice destino) {
 			this.origem = origem;
 			this.destino = destino;
+		}
+
+		Aresta(Vertice origem, Vertice destino, Double peso) {
+            this.origem = origem;
+            this.destino = destino;
+            this.peso = peso;
+        }
+
+		public Aresta getPeso() {
+			return this.peso;
 		}
 
 	}
@@ -90,7 +101,7 @@ public class Grafo {
 		destino.addAdj(origem);
 		arestas.add(e);
 	}
-	
+
 	/*
 	BFS
 		- Calcula a distância de todos os vertíces alcançáveis 
@@ -261,14 +272,102 @@ public class Grafo {
 		return isConnected(G);
 	}
 
+	/*
+	 * A função grafoCompleto(int n) recebe um inteiro n e retorna um grafo g completo
+	 * O grafo retornado tem a caracteristica de que cada vértice é adjacente a todos os outros do grafo
+	*/
+	public Grafo grafoCompleto(int n) {
+		Grafo g = new Grafo();
+		for(Integer i = 0; i < n; i++) {
+			String nomeVertice = i.toString();
+			g.addVertice(nomeVertice);
+		}
+
+		for(Vertice u: g.vertices) {
+			for(Vertice v: g.vertices) {
+				if(u != v && !(u.adj.contains(v) && v.adj.contains(u))) {
+					g.addArestaNo(u, v);
+				}
+			}
+		}
+
+		return g;
+	}
+
+	/*
+	 * A função randomTreeKruskal(int n) recebe um inteiro n
+	 * retorna um grafo com as arestas da árvore formada por mst-kruskal
+	*/
+	public Grafo randomTreeKruskal(int n) {
+		Grafo g = grafoCompleto(n);
+
+		Random gerador = new Random();
+		for(Aresta e: g.arestas) {
+			e.peso = gerador.nextDouble();
+		}
+
+		//g = mstKruskal(g);
+
+		return g;
+	}
+	
+	public Grafo mstKruskal(Grafo g) {
+		Grafo A = new Grafo();
+
+		for(Vertice v: g.vertices) {
+			//make-set(v);
+		}
+
+		// ordenar arestas por ordem crescente de peso
+
+		for(Aresta e: g.arestas) {
+			Vertice u = e.origem;
+			Vertice v = e.destino;
+			//if(find-set(u) != find-set(v)) {
+				A.addArestaNo(u, v);
+				//union(u, v);
+			//}
+		}
+
+		return A;
+	}
+
+	/*
+		Make-Set(x)
+			x.parent = x
+			x.rank = 0
+		
+		Union(x; y)
+			Link(Find-Set(x), Find-Set(y))
+		
+		Link(x; y)
+			if x.rank > y.rank then
+				y.parent = x
+			else
+				x.parent = y
+				if x.rank == y.rank then
+					y.rank = y.rank + 1;
+
+		Find-Set(x)
+			if x.parent != x then
+				x.parent = Find-Set(x.parent)
+			return x.parent
+	*/
+
 	public static void main(String[] args) throws IOException{
 		Grafo g = new Grafo();
 		
 		g.testeUnitario1();
 		g.testeUnitario2();
 		
-		g.testeIsTree();
-		g.testeRandom();
+		//g.testeIsTree();
+		//g.testeRandom();
+
+		g = g.randomTreeKruskal(5);
+		for(Aresta e: g.arestas) {
+			System.out.println(e.peso);
+		}
+
 	}
 
 	/* 
