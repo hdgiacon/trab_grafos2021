@@ -27,6 +27,7 @@ public class Grafo {
 		Vertice pai;
 		String cor;
 		boolean visitado;
+		int rank;
 
 		/* construtor de um vértice padrão */
 		Vertice(String nome) {
@@ -42,6 +43,34 @@ public class Grafo {
 		/* adiciona um vértice na lista de adjacencia */	
 		void addAdj(Vertice v) {
 			adj.add(v);
+		}
+
+		void makeSet(Vertice x) {
+			x.pai = x;
+			x.rank = 0;
+		}
+
+		Vertice findSet(Vertice x) {
+			if(x != x.pai) {
+				x.pai = x.findSet(x.pai);
+			}
+			return x.pai;
+		}
+
+		void link(Vertice x, Vertice y) {
+			if(x.rank > y.rank) {
+				y.pai = x;
+			}
+			else {
+				x.pai = y;
+				if(x.rank == y.rank) {
+					y.rank = y.rank + 1;
+				}
+			}
+		}
+
+		void union(Vertice x, Vertice y) {
+			link(x.findSet(x), y.findSet(y));
 		}
 
 	}
@@ -306,7 +335,7 @@ public class Grafo {
 			e.peso = gerador.nextDouble();
 		}
 
-		//g = mstKruskal(g);
+		g = mstKruskal(g);
 
 		return g;
 	}
@@ -315,7 +344,7 @@ public class Grafo {
 		Grafo A = new Grafo();
 
 		for(Vertice v: g.vertices) {
-			//make-set(v);
+			v.makeSet(v);
 		}
 
 		// ordenar arestas por ordem crescente de peso (não decrescente)
@@ -323,43 +352,21 @@ public class Grafo {
 			@Override public int compare(Aresta p1, Aresta p2) {
 				return Double.compare(p1.peso, p2.peso);
 			}
-		});	
+		});
+
+		g.arestas.sort(Comparator.comparingDouble(Aresta::getPeso));
 
 		for(Aresta e: g.arestas) {
 			Vertice u = e.origem;
 			Vertice v = e.destino;
-			//if(find-set(u) != find-set(v)) {
+			if(u.findSet(u) != v.findSet(v)) {
 				A.addArestaNo(u, v);
-				//union(u, v);
-			//}
+				u.union(u, v);
+			}
 		}
 
 		return A;
 	}
-
-	
-
-	/*
-		Make-Set(x)
-			x.parent = x
-			x.rank = 0
-		
-		Union(x, y)
-			Link(Find-Set(x), Find-Set(y))
-		
-		Link(x; y)
-			if x.rank > y.rank then
-				y.parent = x
-			else
-				x.parent = y
-				if x.rank == y.rank then
-					y.rank = y.rank + 1;
-
-		Find-Set(x)
-			if x.parent != x then
-				x.parent = Find-Set(x.parent)
-			return x.parent
-	*/
 
 	public static void main(String[] args) throws IOException{
 		Grafo g = new Grafo();
@@ -370,9 +377,9 @@ public class Grafo {
 		//g.testeIsTree();
 		//g.testeRandom();
 
-		g = g.randomTreeKruskal(5);
+		g = g.randomTreeKruskal(10);
 		for(Aresta e: g.arestas) {
-			System.out.println(e.peso);
+			System.out.println(e.origem.pai.nome + " " + e.origem.rank + " destino: " + e.destino.pai.nome + " " + e.destino.rank);
 		}
 
 	}
