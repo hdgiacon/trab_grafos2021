@@ -45,34 +45,34 @@ public class Grafo {
 			adj.add(v);
 		}
 
-		void makeSet(Vertice x) {
-			x.pai = x;
-			x.rank = 0;
-		}
+	}
 
-		Vertice findSet(Vertice x) {
-			if(x != x.pai) {
-				x.pai = x.findSet(x.pai);
+	Vertice findSet(Vertice x) {
+		if(x.nome != x.pai.nome) {
+			x.pai = findSet(x.pai);
+		}
+		return x.pai;
+	}
+
+	void makeSet(Vertice x) {
+		x.pai = x;
+		x.rank = 0;
+	}
+
+	void link(Vertice x, Vertice y) {
+		if(x.rank > y.rank) {
+			y.pai = x;
+		}
+		else {
+			x.pai = y;
+			if(x.rank == y.rank) {
+				y.rank = y.rank + 1;
 			}
-			return x.pai;
 		}
+	}
 
-		void link(Vertice x, Vertice y) {
-			if(x.rank > y.rank) {
-				y.pai = x;
-			}
-			else {
-				x.pai = y;
-				if(x.rank == y.rank) {
-					y.rank = y.rank + 1;
-				}
-			}
-		}
-
-		void union(Vertice x, Vertice y) {
-			link(x.findSet(x), y.findSet(y));
-		}
-
+	void union(Vertice x, Vertice y) {
+		link(findSet(x), findSet(y));
 	}
 
 	/* definição de aresta */
@@ -343,8 +343,10 @@ public class Grafo {
 	public Grafo mstKruskal(Grafo g) {
 		Grafo A = new Grafo();
 
+		A.vertices = g.vertices;
+
 		for(Vertice v: g.vertices) {
-			v.makeSet(v);
+			makeSet(v);
 		}
 
 		// ordenar arestas por ordem crescente de peso (não decrescente)
@@ -359,9 +361,9 @@ public class Grafo {
 		for(Aresta e: g.arestas) {
 			Vertice u = e.origem;
 			Vertice v = e.destino;
-			if(u.findSet(u) != v.findSet(v)) {
+			if(findSet(u) != findSet(v)) {
 				A.addArestaNo(u, v);
-				u.union(u, v);
+				union(u, v);
 			}
 		}
 
@@ -375,12 +377,9 @@ public class Grafo {
 		g.testeUnitario2();
 		
 		//g.testeIsTree();
-		//g.testeRandom();
-
-		g = g.randomTreeKruskal(10);
-		for(Aresta e: g.arestas) {
-			System.out.println(e.origem.pai.nome + " " + e.origem.rank + " destino: " + e.destino.pai.nome + " " + e.destino.rank);
-		}
+		g.testeRandom();
+		
+		g.testeUnionFind();
 
 	}
 
@@ -524,6 +523,45 @@ public class Grafo {
 		assert(isTree(randomTreeRandomWalk(1500)) == true) : "Grafo 6 não é uma árvore";
 		assert(isTree(randomTreeRandomWalk(1750)) == true) : "Grafo 7 não é uma árvore";
 		assert(isTree(randomTreeRandomWalk(2000)) == true) : "Grafo 8 não é uma árvore";
+
+		assert(isTree(randomTreeKruskal(250)) == true) : "Grafo 1 não é uma árvore";
+		assert(isTree(randomTreeKruskal(500)) == true) : "Grafo 2 não é uma árvore";
+		assert(isTree(randomTreeKruskal(750)) == true) : "Grafo 3 não é uma árvore";
+		assert(isTree(randomTreeKruskal(1000)) == true) : "Grafo 4 não é uma árvore";
+		assert(isTree(randomTreeKruskal(1250)) == true) : "Grafo 5 não é uma árvore";
+		assert(isTree(randomTreeKruskal(1500)) == true) : "Grafo 6 não é uma árvore";
+		assert(isTree(randomTreeKruskal(1750)) == true) : "Grafo 7 não é uma árvore";
+		assert(isTree(randomTreeKruskal(2000)) == true) : "Grafo 8 não é uma árvore";
+	}
+
+	public void testeUnionFind() {
+		Vertice a = new Vertice("a");
+		Vertice b = new Vertice("b");
+		Vertice c = new Vertice("c");
+		Vertice d = new Vertice("d");
+
+		makeSet(a);
+		makeSet(b);
+		makeSet(c);
+		makeSet(d);
+
+		assert findSet(a) == a;
+		assert findSet(b) == b;
+		assert findSet(c) == c;
+		assert findSet(d) != a;
+
+		union(a, b);
+		union(b, d);
+
+		assert b.rank == 1;
+		assert d.rank == 0;
+		assert a.pai.nome == "b";
+		assert b.pai.nome == "b";
+		assert d.pai.nome != "d";
+
+		assert findSet(a) == findSet(b);
+		assert findSet(d) != findSet(c);
+
 	}
 
 	/* testes automatizados para verificar se randomTreeRandomWalk realmente gera árvores aleatórias
@@ -531,7 +569,7 @@ public class Grafo {
 	 * das árvores resultantes do algoritmo randomTreeRandomWalk, que tem como entrada
 	 * valores predefinidos para n.
 	*/
-	public void testeRandom() throws IOException{
+	public void testeRandom() throws IOException {
 
 		int[] tamanho = {250, 500, 750, 1000, 1250, 1500, 1750, 2000};
 		Double soma = 0.0;
@@ -542,20 +580,37 @@ public class Grafo {
 
 		Random verticeAleatorio = new Random();
 		
-		gravarArq.printf("Random tree\n");
+		System.out.printf("Random tree Random walk\n");
+		gravarArq.printf("Random tree Random walk\n");
 		for(int n : tamanho) {
-			for(int i = 0; i < 1000; i++){
+			for(int i = 0; i < 500; i++){
 				Grafo g = new Grafo();
 				g = randomTreeRandomWalk(n);
 				Vertice s = g.vertices.get(verticeAleatorio.nextInt(n));
 				soma += g.diametro(g, s);
 			}
-			media = soma/1000;
+			media = soma/500;
 			soma = 0.0;
 
 			gravarArq.printf("\n%d %.3f", n, media);
 		}
 
+		System.out.printf("Random tree Kruskal\n");
+		gravarArq.printf("Random tree Kruskal\n");
+		for(int n : tamanho) {
+			System.out.printf(n + "\n");
+			for(int i = 0; i < 500; i++){
+				Grafo g = new Grafo();
+				g = randomTreeKruskal(n);
+				Vertice s = g.vertices.get(verticeAleatorio.nextInt(n));
+				soma += g.diametro(g, s);
+			}
+			media = soma/500;
+			soma = 0.0;
+
+			gravarArq.printf("\n%d %.3f", n, media);
+		}
+		
 		arq.close();
 
 	}
