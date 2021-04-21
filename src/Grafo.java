@@ -117,14 +117,14 @@ public class Grafo {
 	}
 
 	/* Adiciona aresta orientada no grafo */
-	public void addAresta(Vertice origem, Vertice destino){
+	public void addAresta(Vertice origem, Vertice destino) {
 		Aresta e =  new Aresta(origem, destino);
 		origem.addAdj(destino);
 		arestas.add(e);
 	}
 
 	/* Adiciona aresta não orientada no grafo */
-	public void addArestaNo(Vertice origem, Vertice destino){
+	public void addArestaNo(Vertice origem, Vertice destino) {
 		Aresta e =  new Aresta(origem, destino);
 		origem.addAdj(destino);
 		destino.addAdj(origem);
@@ -273,7 +273,7 @@ public class Grafo {
 		- isConnected(G) => true
 		- isConnected(G) => false
 	*/
-	boolean isConnected(Grafo G){
+	boolean isConnected(Grafo G) {
 		for(Vertice u: G.vertices){
 			if(u.cor.equals(BRANCO)){
 				return false;
@@ -291,7 +291,7 @@ public class Grafo {
 		- isTree(G) => true
 		- isTree(G) => false
 	*/
-	boolean isTree(Grafo G){
+	boolean isTree(Grafo G) {
 		if(G.arestas.size() != G.vertices.size() - 1){
 			return false;
 		}  
@@ -340,12 +340,15 @@ public class Grafo {
 		return g;
 	}
 	
+	/*
+	 * Constrói uma árvore A contendo as arestas de menor peso do grafo g
+	 * utiliza os métodos da estrutura union-find
+	 */
 	public Grafo mstKruskal(Grafo g) {
 		Grafo A = new Grafo();
 
-		A.vertices = g.vertices;
-
 		for(Vertice v: g.vertices) {
+			A.addVertice(v.nome);
 			makeSet(v);
 		}
 
@@ -362,7 +365,7 @@ public class Grafo {
 			Vertice u = e.origem;
 			Vertice v = e.destino;
 			if(findSet(u) != findSet(v)) {
-				A.addArestaNo(u, v);
+				A.addArestaNo(A.vertices.get(Integer.parseInt(u.nome)), A.vertices.get(Integer.parseInt(v.nome)));
 				union(u, v);
 			}
 		}
@@ -370,14 +373,16 @@ public class Grafo {
 		return A;
 	}
 
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 		Grafo g = new Grafo();
 		
 		g.testeUnitario1();
 		g.testeUnitario2();
 		
 		//g.testeIsTree();
-		g.testeRandom();
+		//g.testeRandom();
+
+		g = g.randomTreeKruskal(5);
 		
 		g.testeUnionFind();
 
@@ -511,7 +516,8 @@ public class Grafo {
 
 	}
 
-	/* testes para verificar se a função randomTreeRandomWalk gera realmente árvores
+	/* 
+	 * testes para verificar se a função randomTreeRandomWalk gera realmente árvores
 	 * utiliza a função isTree que retorna true se o grafo de entrada é uma árvore
 	*/
 	public void testeIsTree() {
@@ -534,6 +540,13 @@ public class Grafo {
 		assert(isTree(randomTreeKruskal(2000)) == true) : "Grafo 8 não é uma árvore";
 	}
 
+	/*
+	 * Testes para a estrutura union-find
+	 * utiliza alguns vértices e verifica se os métodos retornam o resultado esperado
+	 * para o método makeset o esperado é que os vértices tenham como pai o próprio vértice e o rank igual o zero
+	 * podemos usar o método findSet para verificar qual é o pai de um vértice x
+	 * já para verificar a corretude do método union, nos certificamos que o rank e o pai de um vértice foi alterado corretamente.
+	*/
 	public void testeUnionFind() {
 		Vertice a = new Vertice("a");
 		Vertice b = new Vertice("b");
@@ -596,7 +609,7 @@ public class Grafo {
 		}
 
 		System.out.printf("Random tree Kruskal\n");
-		gravarArq.printf("Random tree Kruskal\n");
+		gravarArq.printf("\nRandom tree Kruskal\n");
 		for(int n : tamanho) {
 			System.out.printf(n + "\n");
 			for(int i = 0; i < 500; i++){
