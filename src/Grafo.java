@@ -47,6 +47,13 @@ public class Grafo {
 
 	}
 
+	/*
+	 * faz com que os nós da áevore apontem para a raiz;
+	 * 
+	 * findSet(x) => x.pai;
+	 *
+	 * findSet(v) => v.pai = u
+	*/
 	Vertice findSet(Vertice x) {
 		if(x.nome != x.pai.nome) {
 			x.pai = findSet(x.pai);
@@ -54,11 +61,22 @@ public class Grafo {
 		return x.pai;
 	}
 
+	/*
+	 * inicializa os vértices da árvore;
+	 * 
+	 * makeSet(x) => efeito colateral sobre o grafo no qual os valores de pai são setados para o próprio
+	  vértice e rank para 0.
+	*/
 	void makeSet(Vertice x) {
 		x.pai = x;
 		x.rank = 0;
 	}
 
+	/*
+	 * TODO:
+	 * 
+	 * link(vertice, vertice) => efeito colateral sobre o grafo no qual
+	*/
 	void link(Vertice x, Vertice y) {
 		if(x.rank > y.rank) {
 			y.pai = x;
@@ -71,6 +89,11 @@ public class Grafo {
 		}
 	}
 
+	/*
+	 * TODO:
+	 *
+	 * union(vertice, vertice) => possui efeito colateral sobre o grafo no qual
+	*/
 	void union(Vertice x, Vertice y) {
 		link(findSet(x), findSet(y));
 	}
@@ -88,6 +111,7 @@ public class Grafo {
 			this.destino = destino;
 		}
 
+		/* construtor de uma aresta com peso */
 		Aresta(Vertice origem, Vertice destino, Double peso) {
             this.origem = origem;
             this.destino = destino;
@@ -132,14 +156,13 @@ public class Grafo {
 	}
 
 	/*
-	BFS
-		- Calcula a distância de todos os vertíces alcançáveis 
-		a partir de um vértice de origem s;
-		- Resulta em uma arvore;
-
-		- Bfs(grafo, vertice) => resulta em um efeito colateral no grafo,
-		atribuindo a distância dos vértices v ao vértice de origem s no campo v.d,
-		seu vértice antecessor ao campo v.pai, e sua cor em v.cor.
+	 * Calcula a distância de todos os vertíces alcançáveis 
+	   a partir de um vértice de origem s;
+	 * Resulta em uma arvore;
+	 *
+	 * Bfs(grafo, vertice) => resulta em um efeito colateral no grafo,
+	   atribuindo a distância dos vértices v ao vértice de origem s no campo v.d,
+	   seu vértice antecessor ao campo v.pai, e sua cor em v.cor.
 	*/
 	public void Bfs(Grafo g, Vertice s) {
 		for(Vertice v: g.vertices){
@@ -170,17 +193,16 @@ public class Grafo {
 
 	}
 
-	/*
-	função maior	
-		- Função que retorna o vértice com maior distância;
-		- A entrada precisa ser uma árvore;
-		- Utilizado após o bfs para obter o vértice v com maior distancia do vértice u,
-		faz parte do cálculo do diametro do grafo;
-		- maior(grafo) => maior
-
-		- maior(G) => 3
-		- maior(H) => 2
-		- maior(I) => 1
+	/*	
+	 * Função que retorna o vértice com maior distância;
+	 * A entrada precisa ser uma árvore;
+	 * Utilizado após o bfs para obter o vértice v com maior distancia do vértice u,
+	   faz parte do cálculo do diametro do grafo;
+	 * maior(grafo) => maior
+	 *
+	 * maior(G) => 3
+	 * maior(H) => 2
+	 * maior(I) => 1
 	*/
 	public Vertice maior(Grafo g) {
 		Vertice maior = new Vertice();
@@ -199,14 +221,14 @@ public class Grafo {
 	}
 
 	/*
-	função diâmetro
-		- comprimento do maior caminho do grafo;
-		- entrada precisa ser uma árvore
-		- diametro(grafo, vertice) => maior comprimento do grafo.
-
-		- diametro(G, s) => 2
-		- diametro(H, v1) => 3
-		- diametro(I, a) =>	1
+	 * comprimento do maior caminho do grafo;
+	 * entrada precisa ser uma árvore
+	 * 
+	 * diametro(grafo, vertice) => maior comprimento do grafo.
+	 *
+	 * diametro(G, s) => 2
+	 * diametro(H, v1) => 3
+	 * diametro(I, a) =>	1
 	*/
 	public Double diametro(Grafo g, Vertice s) {
 
@@ -224,16 +246,15 @@ public class Grafo {
 	}
 
 	/*
-	função random tree
-	 	- recebe um número inteiro n > 0; 
-		- produz uma árvore contendo os n vertices partindo de um vértice aleatório u.
-
-		randomTreeRandomWalk(n) => G
-		- onde G é um grafo formado pela árvore.
-
-		- randomTreeRandomWalk(10) => árvore com 10 vértices
-		- randomTreeRandomWalk(32) => árvore com 32 vértices
-		- randomTreeRandomWalk(100) => árvore com 100 vértices
+	 * recebe um número inteiro n > 0; 
+	 * produz uma árvore contendo os n vertices partindo de um vértice aleatório u.
+	 *
+	 * randomTreeRandomWalk(n) => G
+	 * onde G é um grafo formado pela árvore.
+	 *
+	 * randomTreeRandomWalk(10) => árvore com 10 vértices
+	 * randomTreeRandomWalk(32) => árvore com 32 vértices
+	 * randomTreeRandomWalk(100) => árvore com 100 vértices
 	*/
 	public Grafo randomTreeRandomWalk(int n) {
 		Grafo g = new Grafo();
@@ -266,12 +287,11 @@ public class Grafo {
 	}
 
 	/*
-	função isConnected
-		- verifica se um grafo G possui algum vértice de cor branco;
-		- se não houver, então G é conexo(true).
-
-		- isConnected(G) => true
-		- isConnected(G) => false
+	 * verifica se um grafo G possui algum vértice de cor branco;
+	 * se não houver, então G é conexo(true).
+	 *
+	 * isConnected(G) => true
+	 * isConnected(G) => false
 	*/
 	boolean isConnected(Grafo G) {
 		for(Vertice u: G.vertices){
@@ -283,13 +303,12 @@ public class Grafo {
 	}
 
 	/*
-	função isTree
-		- verifica se um grafo G é uma árvore;
-		- a condição if verifica
-		- se não houver ciclos e o grafo for conexo, então G é uma árvore(true).
-
-		- isTree(G) => true
-		- isTree(G) => false
+	 * verifica se um grafo G é uma árvore;
+	 * a condição if verifica;
+	 * se não houver ciclos e o grafo for conexo, então G é uma árvore(true);
+	 *
+	 * isTree(G) => true;
+	 * isTree(G) => false.
 	*/
 	boolean isTree(Grafo G) {
 		if(G.arestas.size() != G.vertices.size() - 1){
@@ -302,8 +321,13 @@ public class Grafo {
 	}
 
 	/*
-	 * A função grafoCompleto(int n) recebe um inteiro n e retorna um grafo g completo
-	 * O grafo retornado tem a caracteristica de que cada vértice é adjacente a todos os outros do grafo
+	 * A função grafoCompleto(int n) recebe um inteiro n e retorna um grafo g completo;
+	 * O grafo retornado tem a caracteristica de que cada vértice é adjacente a todos os outros do grafo;
+	 * 
+	 * grafoCompleto(n) => g completo com n vértices;
+	 * 
+	 * grafoCompleto(5) => g completo com 5 vértices;
+	 * grafoCompleto(50) => g completo com 50 vértices.
 	*/
 	public Grafo grafoCompleto(int n) {
 		Grafo g = new Grafo();
@@ -324,8 +348,13 @@ public class Grafo {
 	}
 
 	/*
-	 * A função randomTreeKruskal(int n) recebe um inteiro n
-	 * retorna um grafo com as arestas da árvore formada por mst-kruskal
+	 * A função randomTreeKruskal(int n) recebe um inteiro n;
+	 * retorna um grafo com as arestas da árvore formada por mst-kruskal;
+	 * 
+	 * randomTreeJruskal(n) => grafo de n vértices com arestas da árvore;
+	 * 
+	 * randomTreeJruskal(5) => grafo de 5 vértices com arestas da árvore;
+	 * randomTreeJruskal(50) => grafo de 50 vértices com arestas da árvore.
 	*/
 	public Grafo randomTreeKruskal(int n) {
 		Grafo g = grafoCompleto(n);
@@ -341,8 +370,13 @@ public class Grafo {
 	}
 	
 	/*
-	 * Constrói uma árvore A contendo as arestas de menor peso do grafo g
-	 * utiliza os métodos da estrutura union-find
+	 * Constrói uma árvore A contendo as arestas de menor peso do grafo g;
+	 * utiliza os métodos da estrutura union-find;
+	 * 
+	 * grafo => grafo A com arestas de menor peso;
+	 * 
+	 * g(10) => A(10);
+	 * g(40) => A(40).
 	 */
 	public Grafo mstKruskal(Grafo g) {
 		Grafo A = new Grafo();
@@ -389,8 +423,8 @@ public class Grafo {
 	}
 
 	/* 
-		- teste unitário 1 
-		- java -ea Grafo.java 	->	 ativar o assert e emitir erros se houver algum 
+	 * teste unitário 1 
+	 * java -ea Grafo.java 	->	 ativar o assert e emitir erros se houver algum 
 	*/
 	public void testeUnitario1(){
 		
@@ -577,10 +611,12 @@ public class Grafo {
 
 	}
 
-	/* testes automatizados para verificar se randomTreeRandomWalk realmente gera árvores aleatórias
-	 * gera um arquivo 'diametros.txt' com o valor medio de diametro
-	 * das árvores resultantes do algoritmo randomTreeRandomWalk, que tem como entrada
-	 * valores predefinidos para n.
+	/* 
+	 * testes automatizados para verificar se randomTreeRandomWalk realmente gera árvores aleatórias;
+	 * testes automatizados para verificar se randomTreeKruskal gera árvores aleatórias com peso mínimo;
+	 * gera um arquivo 'diametros.txt' com o valor medio de diametro das árvores resultantes do 
+	   algoritmo randomTreeRandomWalk e randomTreeKruskal, que tem como entrada valores predefinidos 
+	   para n.
 	*/
 	public void testeRandom() throws IOException {
 
