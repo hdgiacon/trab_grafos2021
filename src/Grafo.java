@@ -65,18 +65,15 @@ public class Grafo {
 	 * inicializa os vértices da árvore;
 	 * 
 	 * makeSet(x) => efeito colateral sobre o grafo no qual os valores de pai são setados para o próprio
-	  vértice e rank para 0.
+	  vértice e rank para 0;
+	 *
+	 * makeSet(u).
 	*/
 	void makeSet(Vertice x) {
 		x.pai = x;
 		x.rank = 0;
 	}
 
-	/*
-	 * TODO:
-	 * 
-	 * link(vertice, vertice) => efeito colateral sobre o grafo no qual
-	*/
 	void link(Vertice x, Vertice y) {
 		if(x.rank > y.rank) {
 			y.pai = x;
@@ -89,10 +86,16 @@ public class Grafo {
 		}
 	}
 
-	/*
-	 * TODO:
+
+
+	/*	
+	 * Define um rank para cada vértice e ordena a árvore beaseado nesse atributo rank;
+	 * Rank determina a altura de um determinado vértice na árvore;
 	 *
-	 * union(vertice, vertice) => possui efeito colateral sobre o grafo no qual
+	 * union(vertice, vertice) => possui efeito colateral sobre o grafo no qual os vertices 
+	   são ordenados pelo seu rank, no qual o pai tem sempre o maior rank;
+	 *
+	 * union(u, v);
 	*/
 	void union(Vertice x, Vertice y) {
 		link(findSet(x), findSet(y));
@@ -414,9 +417,7 @@ public class Grafo {
 		g.testeUnitario2();
 		
 		//g.testeIsTree();
-		//g.testeRandom();
-
-		g = g.randomTreeKruskal(5);
+		g.testeRandom();
 		
 		g.testeUnionFind();
 
