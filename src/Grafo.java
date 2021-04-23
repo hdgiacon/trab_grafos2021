@@ -158,6 +158,13 @@ public class Grafo {
 		arestas.add(e);
 	}
 
+	public void addArestaNoPeso(Vertice origem, Vertice destino, Double peso) {
+		Aresta e =  new Aresta(origem, destino, peso);
+		origem.addAdj(destino);
+		destino.addAdj(origem);
+		arestas.add(e);
+	}
+
 	/*
 	 * Calcula a distância de todos os vertíces alcançáveis 
 	   a partir de um vértice de origem s;
@@ -326,6 +333,7 @@ public class Grafo {
 	/*
 	 * A função grafoCompleto(int n) recebe um inteiro n e retorna um grafo g completo;
 	 * O grafo retornado tem a caracteristica de que cada vértice é adjacente a todos os outros do grafo;
+	 * Gera arestas com pesos aleatórios do tipo Double entre 0.0 e 1.0
 	 * 
 	 * grafoCompleto(n) => g completo com n vértices;
 	 * 
@@ -339,10 +347,13 @@ public class Grafo {
 			g.addVertice(nomeVertice);
 		}
 
+		Random gerador = new Random();
+		Double peso;
 		for(Vertice u: g.vertices) {
 			for(Vertice v: g.vertices) {
 				if(u != v && !(u.adj.contains(v) && v.adj.contains(u))) {
-					g.addArestaNo(u, v);
+					peso = gerador.nextDouble();
+					g.addArestaNoPeso(u, v, peso);
 				}
 			}
 		}
@@ -361,11 +372,6 @@ public class Grafo {
 	*/
 	public Grafo randomTreeKruskal(int n) {
 		Grafo g = grafoCompleto(n);
-
-		Random gerador = new Random();
-		for(Aresta e: g.arestas) {
-			e.peso = gerador.nextDouble();
-		}
 
 		g = mstKruskal(g);
 
@@ -636,8 +642,10 @@ public class Grafo {
 			for(int i = 0; i < 500; i++){
 				Grafo g = new Grafo();
 				g = randomTreeRandomWalk(n);
-				Vertice s = g.vertices.get(verticeAleatorio.nextInt(n));
-				soma += g.diametro(g, s);
+				if(isTree(g)) {
+					Vertice s = g.vertices.get(verticeAleatorio.nextInt(n));
+					soma += g.diametro(g, s);
+				}
 			}
 			media = soma/500;
 			soma = 0.0;
@@ -646,16 +654,18 @@ public class Grafo {
 		}
 
 		System.out.printf("Random tree Kruskal\n");
-		gravarArq.printf("\nRandom tree Kruskal\n");
+		gravarArq.printf("\nRandom tree Kruskal");
 		for(int n : tamanho) {
 			System.out.printf(n + "\n");
-			for(int i = 0; i < 500; i++){
+			for(int i = 0; i < 20; i++){
 				Grafo g = new Grafo();
 				g = randomTreeKruskal(n);
-				Vertice s = g.vertices.get(verticeAleatorio.nextInt(n));
-				soma += g.diametro(g, s);
+				if(isTree(g)) {
+					Vertice s = g.vertices.get(verticeAleatorio.nextInt(n));
+					soma += g.diametro(g, s);
+				}
 			}
-			media = soma/500;
+			media = soma/20;
 			soma = 0.0;
 
 			gravarArq.printf("\n%d %.3f", n, media);
