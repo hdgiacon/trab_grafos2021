@@ -349,12 +349,10 @@ public class Grafo {
 
 		Random gerador = new Random();
 		Double peso;
-		for(Vertice u: g.vertices) {
-			for(Vertice v: g.vertices) {
-				if(u != v && !(u.adj.contains(v) && v.adj.contains(u))) {
-					peso = gerador.nextDouble();
-					g.addArestaNoPeso(u, v, peso);
-				}
+		for(int i = 0;i< g.vertices.size();i++) {
+			for(int j = i + 1; j < g.vertices.size();j++) {
+				peso = gerador.nextDouble();
+				g.addArestaNoPeso(g.vertices.get(i), g.vertices.get(j), peso);
 			}
 		}
 
@@ -391,27 +389,23 @@ public class Grafo {
 		Grafo A = new Grafo();
 
 		for(Vertice v: g.vertices) {
-			A.addVertice(v.nome);
+			v.pai = A.addVertice(v.nome);
 			makeSet(v);
 		}
 
 		// ordenar arestas por ordem crescente de peso (não decrescente)
-		Collections.sort(g.arestas, new Comparator<Aresta>() {
-			@Override public int compare(Aresta p1, Aresta p2) {
-				return Double.compare(p1.peso, p2.peso);
-			}
-		});
-
 		g.arestas.sort(Comparator.comparingDouble(Aresta::getPeso));
 
 		for(Aresta e: g.arestas) {
 			Vertice u = e.origem;
 			Vertice v = e.destino;
 			if(findSet(u) != findSet(v)) {
-				A.addArestaNo(A.vertices.get(Integer.parseInt(u.nome)), A.vertices.get(Integer.parseInt(v.nome)));
+				A.addArestaNo(u.pai, v.pai);
 				union(u, v);
 			}
 		}
+
+		//for
 
 		return A;
 	}
@@ -657,7 +651,7 @@ public class Grafo {
 		gravarArq.printf("\nRandom tree Kruskal");
 		for(int n : tamanho) {
 			System.out.printf(n + "\n");
-			for(int i = 0; i < 20; i++){
+			for(int i = 0; i < 500; i++){
 				Grafo g = new Grafo();
 				g = randomTreeKruskal(n);
 				if(isTree(g)) {
@@ -665,7 +659,7 @@ public class Grafo {
 					soma += g.diametro(g, s);
 				}
 			}
-			media = soma/20;
+			media = soma/500;
 			soma = 0.0;
 
 			gravarArq.printf("\n%d %.3f", n, media);
