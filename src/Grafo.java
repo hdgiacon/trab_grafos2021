@@ -28,6 +28,7 @@ public class Grafo {
 		String cor;
 		boolean visitado;
 		int rank;
+		Double chave;
 
 		/* construtor de um vértice padrão */
 		Vertice(int nome) {
@@ -129,6 +130,7 @@ public class Grafo {
 
 	List<Vertice> vertices;
 	List<Aresta> arestas;
+	Double lista_adj[][];
 
 	/* contrutor da classe grafo */
 	public Grafo() {
@@ -403,9 +405,65 @@ public class Grafo {
 			}
 		}
 
-		//for
-
 		return A;
+	}
+
+	/*
+	public Vertice extractMin(List Q) {
+		Vertice min = Q.stream().min(Comparator.comparing(Vertice::))
+	}
+
+	public decrease-key(List Q, Vertice v) {
+
+	}
+
+	*/
+
+	/*
+	 Random-Tree-Prim(n)
+	*/
+	public Grafo randomTreePrim(int n) {
+		Grafo g = new Grafo();
+		Random gerador = new Random();
+
+		Double l[][] = new Double[n][n];
+		for(int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				l[i][j] = gerador.nextDouble();
+			}
+		}
+		g.lista_adj = l;
+
+		for(Integer i = 0; i < n; i++) {
+			g.addVertice(i);
+		}
+
+		Vertice s = g.vertices.get(gerador.nextInt(n));
+
+		mstPrim(g, l, s);
+
+		return g;
+	}
+
+	public void mstPrim(Grafo g, Double[][] w, Vertice s) {
+		
+		for(Vertice u: g.vertices) {
+			u.chave = Double.POSITIVE_INFINITY;
+			u.pai = null;
+		}
+		s.chave = 0;
+		List<Vertice> Q = g.vertices;
+
+		while(Q.size() != 0) {
+			Vertice u = extractMin(Q);
+			for(Vertice v: u.adj) {
+				if(Q.contains(v) && w[u.nome][v.nome] < v.chave) {
+					v.pai = u;
+					v.chave = w[u.nome][v.nome];
+					//decrease-key(Q, v);
+				}
+			}
+		}
 	}
 
 	public static void main(String[] args) throws IOException {
