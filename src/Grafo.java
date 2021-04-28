@@ -21,7 +21,7 @@ public class Grafo {
 	/* definição de vertice */
 	public class Vertice {
 		
-		String nome;
+		int nome;
 		List<Vertice> adj;
 		Double d;
 		Vertice pai;
@@ -30,14 +30,14 @@ public class Grafo {
 		int rank;
 
 		/* construtor de um vértice padrão */
-		Vertice(String nome) {
+		Vertice(int nome) {
 			this.nome = nome;
 			this.adj = new ArrayList<Vertice>();
 		}
 
 		/* construtor de um vertice nulo para inicialização */
 		Vertice() {
-			this.nome = "Nulo";
+			this.nome = -1;
 		}
 
 		/* adiciona um vértice na lista de adjacencia */	
@@ -137,7 +137,7 @@ public class Grafo {
 	}
 
 	/* adiciona um vértice à lista de vértices */
-	public Vertice addVertice(String nome) {
+	public Vertice addVertice(int nome) {
 		Vertice v = new Vertice(nome);
 		vertices.add(v);
 		return v;
@@ -187,7 +187,7 @@ public class Grafo {
 		Deque<Vertice> Q = new ArrayDeque<Vertice>();
 		Q.add(s);
 
-		Vertice u = new Vertice("u");
+		Vertice u = new Vertice();
 
 		while(Q.size() != 0) {
 			u = Q.removeFirst();
@@ -269,8 +269,7 @@ public class Grafo {
 	public Grafo randomTreeRandomWalk(int n) {
 		Grafo g = new Grafo();
 		for(Integer i = 0; i < n; i++) {
-			String nomeVertice = i.toString();
-			g.addVertice(nomeVertice);
+			g.addVertice(i);
 		}
 
 		for(Vertice u: g.vertices) {
@@ -343,8 +342,7 @@ public class Grafo {
 	public Grafo grafoCompleto(int n) {
 		Grafo g = new Grafo();
 		for(Integer i = 0; i < n; i++) {
-			String nomeVertice = i.toString();
-			g.addVertice(nomeVertice);
+			g.addVertice(i);
 		}
 
 		Random gerador = new Random();
@@ -400,7 +398,7 @@ public class Grafo {
 			Vertice u = e.origem;
 			Vertice v = e.destino;
 			if(findSet(u) != findSet(v)) {
-				A.addArestaNo(u.pai, v.pai);
+				A.addArestaNo(A.vertices.get(u.nome), A.vertices.get(v.nome));
 				union(u, v);
 			}
 		}
@@ -431,22 +429,22 @@ public class Grafo {
 		
 		/*
 		*---*     *---*     *---*
-		| R |---->| S |     | T |
+		| 1 |---->| 2 |     | 3 |
 		*---*  /> *---*     *---*
 		  |   /     |      /  |  
 		  v  /      v     /   v  
 		*---*     *---*  /  *---*
-		| V |<----| W |</   | X |
+		| 4 |<----| 5 |</   | 6 |
 		*---*     *---*     *---*
 		*/
 
 		Grafo g = new Grafo();
-		Vertice r = g.addVertice("r");
-		Vertice s = g.addVertice("s");
-		Vertice t = g.addVertice("t");
-		Vertice v = g.addVertice("v");
-		Vertice w = g.addVertice("w");
-		Vertice x = g.addVertice("x");
+		Vertice r = g.addVertice(1);
+		Vertice s = g.addVertice(2);
+		Vertice t = g.addVertice(3);
+		Vertice v = g.addVertice(4);
+		Vertice w = g.addVertice(5);
+		Vertice x = g.addVertice(6);
 		g.addAresta(r, s);
 		g.addAresta(r, v);
 		g.addAresta(w, v);
@@ -501,11 +499,11 @@ public class Grafo {
 		*/
 
 		Grafo h = new Grafo();
-		Vertice v1 = h.addVertice("1");	
-		Vertice v2 = h.addVertice("2");
-		Vertice v3 = h.addVertice("3");
-		Vertice v4 = h.addVertice("4");
-		Vertice v5 = h.addVertice("5");
+		Vertice v1 = h.addVertice(1);	
+		Vertice v2 = h.addVertice(2);
+		Vertice v3 = h.addVertice(3);
+		Vertice v4 = h.addVertice(4);
+		Vertice v5 = h.addVertice(5);
 		h.addAresta(v1, v2);
 		h.addAresta(v1, v5);
 		h.addAresta(v2, v1);
@@ -583,10 +581,10 @@ public class Grafo {
 	 * já para verificar a corretude do método union, nos certificamos que o rank e o pai de um vértice foi alterado corretamente.
 	*/
 	public void testeUnionFind() {
-		Vertice a = new Vertice("a");
-		Vertice b = new Vertice("b");
-		Vertice c = new Vertice("c");
-		Vertice d = new Vertice("d");
+		Vertice a = new Vertice(1);
+		Vertice b = new Vertice(2);
+		Vertice c = new Vertice(3);
+		Vertice d = new Vertice(4);
 
 		makeSet(a);
 		makeSet(b);
@@ -603,9 +601,9 @@ public class Grafo {
 
 		assert b.rank == 1;
 		assert d.rank == 0;
-		assert a.pai.nome == "b";
-		assert b.pai.nome == "b";
-		assert d.pai.nome != "d";
+		assert a.pai.nome == 2;
+		assert b.pai.nome == 2;
+		assert d.pai.nome != 4;
 
 		assert findSet(a) == findSet(b);
 		assert findSet(d) != findSet(c);
@@ -662,6 +660,7 @@ public class Grafo {
 			media = soma/500;
 			soma = 0.0;
 
+			System.out.printf(media+"\n");
 			gravarArq.printf("\n%d %.3f", n, media);
 		}
 		
