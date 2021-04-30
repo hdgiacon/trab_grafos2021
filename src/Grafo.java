@@ -46,6 +46,10 @@ public class Grafo {
 			adj.add(v);
 		}
 
+		public Double getChave() {
+			return this.chave;
+		}
+
 	}
 
 	/*
@@ -408,16 +412,15 @@ public class Grafo {
 		return A;
 	}
 
-	/*
+	
 	public Vertice extractMin(List Q) {
-		Vertice min = Q.stream().min(Comparator.comparing(Vertice::))
+		return Q.get(0);
 	}
-
-	public decrease-key(List Q, Vertice v) {
-
+	
+	public List decreaseKey(List Q, Vertice v) {
+		Q.sort(Comparator.comparingDouble(Vertice::getChave));
+		return Q;
 	}
-
-	*/
 
 	/*
 	 Random-Tree-Prim(n)
@@ -431,6 +434,7 @@ public class Grafo {
 			for(int j = 0; j < n; j++) {
 				l[i][j] = gerador.nextDouble();
 			}
+			l[i][i] = Double.POSITIVE_INFINITY;
 		}
 		g.lista_adj = l;
 
@@ -445,22 +449,30 @@ public class Grafo {
 		return g;
 	}
 
+	/*
+	 * mstPrim(g, w, s)
+	*/
 	public void mstPrim(Grafo g, Double[][] w, Vertice s) {
-		
+		List<Vertice> Q = new ArrayList<Vertice>();
+
 		for(Vertice u: g.vertices) {
 			u.chave = Double.POSITIVE_INFINITY;
 			u.pai = null;
+			Q.add(u);
 		}
-		s.chave = 0;
-		List<Vertice> Q = g.vertices;
+		s.chave = 0.0;
+		Q.sort(Comparator.comparingDouble(Vertice::getChave));
 
 		while(Q.size() != 0) {
-			Vertice u = extractMin(Q);
-			for(Vertice v: u.adj) {
-				if(Q.contains(v) && w[u.nome][v.nome] < v.chave) {
+			Vertice u = Q.get(0);
+			Q.remove(0);
+			for(int j = 0; j < w.length; j++) {
+				Vertice v = g.vertices.get(j);
+				if(Q.contains(v) && w[u.nome][j] < v.chave) {
 					v.pai = u;
-					v.chave = w[u.nome][v.nome];
-					//decrease-key(Q, v);
+					v.chave = w[u.nome][j];
+					Q = decreaseKey(Q, v);
+					g.addArestaNo(u, v);
 				}
 			}
 		}
@@ -473,8 +485,13 @@ public class Grafo {
 		g.testeUnitario2();
 		
 		//g.testeIsTree();
-		g.testeRandom();
-		
+		//g.testeRandom();
+
+		g = g.randomTreePrim(5);
+		if(g.isTree(g)) {
+			System.out.printf("DEU");
+		}
+
 		g.testeUnionFind();
 
 	}
