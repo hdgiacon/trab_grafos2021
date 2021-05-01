@@ -412,18 +412,32 @@ public class Grafo {
 		return A;
 	}
 
-	
-	public Vertice extractMin(List Q) {
+	/*
+	 * Retorna o vértice com menor chave na fila Q
+	 * extractMin(Q) => Vertice
+	 * extractMin(Q) => 1
+	*/
+	public Vertice extractMin(ArrayList<Vertice> Q) {
 		return Q.get(0);
 	}
 	
-	public List decreaseKey(List Q, Vertice v) {
+	/*
+	 * Atualiza a fila de prioridade conforme um vértice recebe uma nova chave
+	 * Ordenado de forma crescente à partir dos valores de chave
+	 * decreaseKey(Q) => ArrayList Q
+	*/
+	public ArrayList decreaseKey(ArrayList Q) {
 		Q.sort(Comparator.comparingDouble(Vertice::getChave));
 		return Q;
 	}
 
 	/*
-	 Random-Tree-Prim(n)
+	 * A função randomTreePrim(n) recebe um valor inteiro n
+	 * Retorna uma árvore geradora mínima que é construída pela função mstPrim
+	 * randomTreePrim(n) => árvore de n vértices com n-1 arestas
+	 * 
+	 * randomTreePrim(250) => árvore de 250 vértices com 249 arestas
+	 * randomTreePrim(500) => árvore de 500 vértices com 499 arestas
 	*/
 	public Grafo randomTreePrim(int n) {
 		Grafo g = new Grafo();
@@ -450,10 +464,14 @@ public class Grafo {
 	}
 
 	/*
-	 * mstPrim(g, w, s)
+	 * A função mstPrim(g, w, s) constrói a árvore geradora com base em uma fila de prioridades
+	 * A fila de prioridades utiliza o valor de chave para determinar a ordem das arestas a serem analisadas
+	 * A árvore construída seria obtida através do campo pai de cada vértice.
+	 * 
+	 * mstPrim(g, w, s) => void, altera o grafo g adicionando as arestas da árvore
 	*/
 	public void mstPrim(Grafo g, Double[][] w, Vertice s) {
-		List<Vertice> Q = new ArrayList<Vertice>();
+		ArrayList<Vertice> Q = new ArrayList<Vertice>();
 
 		for(Vertice u: g.vertices) {
 			u.chave = Double.POSITIVE_INFINITY;
@@ -464,16 +482,20 @@ public class Grafo {
 		Q.sort(Comparator.comparingDouble(Vertice::getChave));
 
 		while(Q.size() != 0) {
-			Vertice u = Q.get(0);
+			Vertice u = extractMin(Q);
 			Q.remove(0);
 			for(int j = 0; j < w.length; j++) {
 				Vertice v = g.vertices.get(j);
 				if(Q.contains(v) && w[u.nome][j] < v.chave) {
 					v.pai = u;
 					v.chave = w[u.nome][j];
-					Q = decreaseKey(Q, v);
-					g.addArestaNo(u, v);
+					Q = decreaseKey(Q);
 				}
+			}
+		}
+		for(Vertice v: g.vertices){
+			if(v.pai != null) {
+				g.addArestaNo(v.pai, v);
 			}
 		}
 	}
@@ -483,16 +505,9 @@ public class Grafo {
 		
 		g.testeUnitario1();
 		g.testeUnitario2();
-		
-		//g.testeIsTree();
-		//g.testeRandom();
-
-		g = g.randomTreePrim(5);
-		if(g.isTree(g)) {
-			System.out.printf("DEU");
-		}
-
 		g.testeUnionFind();
+		g.testeIsTree();
+		g.testeRandomTrees();
 
 	}
 
@@ -646,6 +661,15 @@ public class Grafo {
 		assert(isTree(randomTreeKruskal(1500)) == true) : "Grafo 6 não é uma árvore";
 		assert(isTree(randomTreeKruskal(1750)) == true) : "Grafo 7 não é uma árvore";
 		assert(isTree(randomTreeKruskal(2000)) == true) : "Grafo 8 não é uma árvore";
+
+		assert(isTree(randomTreePrim(250)) == true) : "Grafo 1 não é uma árvore";
+		assert(isTree(randomTreePrim(500)) == true) : "Grafo 2 não é uma árvore";
+		assert(isTree(randomTreePrim(750)) == true) : "Grafo 3 não é uma árvore";
+		assert(isTree(randomTreePrim(1000)) == true) : "Grafo 4 não é uma árvore";
+		assert(isTree(randomTreePrim(1250)) == true) : "Grafo 5 não é uma árvore";
+		assert(isTree(randomTreePrim(1500)) == true) : "Grafo 6 não é uma árvore";
+		assert(isTree(randomTreePrim(1750)) == true) : "Grafo 7 não é uma árvore";
+		assert(isTree(randomTreePrim(2000)) == true) : "Grafo 8 não é uma árvore";
 	}
 
 	/*
@@ -692,7 +716,7 @@ public class Grafo {
 	   algoritmo randomTreeRandomWalk e randomTreeKruskal, que tem como entrada valores predefinidos 
 	   para n.
 	*/
-	public void testeRandom() throws IOException {
+	public void testeRandomTrees() throws IOException {
 
 		int[] tamanho = {250, 500, 750, 1000, 1250, 1500, 1750, 2000};
 		Double soma = 0.0;
@@ -720,8 +744,27 @@ public class Grafo {
 			gravarArq.printf("\n%d %.3f", n, media);
 		}
 
+		System.out.printf("Random tree Prim\n");
+		gravarArq.printf("\nRandom tree Prim\n");
+		for(int n : tamanho) {
+			System.out.printf(n + "\n");
+			for(int i = 0; i < 500; i++){
+				Grafo g = new Grafo();
+				g = randomTreePrim(n);
+				if(isTree(g)) {
+					Vertice s = g.vertices.get(verticeAleatorio.nextInt(n));
+					soma += g.diametro(g, s);
+				}
+			}
+			media = soma/500;
+			soma = 0.0;
+
+			System.out.printf(media+"\n");
+			gravarArq.printf("\n%d %.3f", n, media);
+		}
+
 		System.out.printf("Random tree Kruskal\n");
-		gravarArq.printf("\nRandom tree Kruskal");
+		gravarArq.printf("\nRandom tree Kruskal\n");
 		for(int n : tamanho) {
 			System.out.printf(n + "\n");
 			for(int i = 0; i < 500; i++){
