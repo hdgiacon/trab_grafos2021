@@ -414,7 +414,9 @@ public class Grafo {
 
 	/*
 	 * Retorna o vértice com menor chave na fila Q
+	 * 
 	 * extractMin(Q) => Vertice
+	 * 
 	 * extractMin(Q) => 1
 	*/
 	public Vertice extractMin(ArrayList<Vertice> Q) {
@@ -423,10 +425,12 @@ public class Grafo {
 	
 	/*
 	 * Atualiza a fila de prioridade conforme um vértice recebe uma nova chave
+	 * 
 	 * Ordenado de forma crescente à partir dos valores de chave
+	 * 
 	 * decreaseKey(Q) => ArrayList Q
 	*/
-	public ArrayList decreaseKey(ArrayList Q) {
+	public ArrayList<Vertice> decreaseKey(ArrayList<Vertice> Q) {
 		Q.sort(Comparator.comparingDouble(Vertice::getChave));
 		return Q;
 	}
@@ -434,6 +438,7 @@ public class Grafo {
 	/*
 	 * A função randomTreePrim(n) recebe um valor inteiro n
 	 * Retorna uma árvore geradora mínima que é construída pela função mstPrim
+	 * 
 	 * randomTreePrim(n) => árvore de n vértices com n-1 arestas
 	 * 
 	 * randomTreePrim(250) => árvore de 250 vértices com 249 arestas
